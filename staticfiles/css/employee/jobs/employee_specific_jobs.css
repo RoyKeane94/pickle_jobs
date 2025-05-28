@@ -1,0 +1,42 @@
+/* Styles for the employee specific job detail page */
+
+.job-detail-container {
+    /* Add container styles if needed */
+}
+
+.job-header {
+    border-bottom: 1px solid var(--border-color-light);
+    padding-bottom: var(--spacing-medium);
+}
+
+.job-header h1 {
+    margin-bottom: var(--spacing-small);
+}
+
+.job-header h2 {
+    margin-bottom: var(--spacing-medium);
+}
+
+.job-header p span {
+    display: inline-block;
+    color: var(--text-color-secondary);
+}
+
+.job-header p i {
+    margin-right: var(--spacing-xsmall);
+}
+
+.job-body h3 {
+    margin-bottom: var(--spacing-small);
+    color: var(--text-color-primary);
+    font-weight: var(--font-weight-bold);
+}
+
+.job-characteristics .badge {
+    font-size: 0.9em;
+    padding: var(--spacing-xsmall) var(--spacing-small);
+}
+
+.job-actions .btn {
+    margin-right: var(--spacing-small);
+}

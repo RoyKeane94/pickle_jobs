@@ -1,0 +1,19 @@
+/* Styles for the employee jobs overview page */
+
+.job-listings-container {
+    /* Add container styles if needed */
+}
+
+.job-listing.card {
+    /* Customize card appearance for job listings */
+    border-left: 4px solid var(--primary-color);
+}
+
+.job-listing .card-title a {
+    text-decoration: none;
+    color: var(--text-color-primary); /* Or your preferred link color */
+}
+
+.job-listing .card-title a:hover {
+    text-decoration: underline;
+}

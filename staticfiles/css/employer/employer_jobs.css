@@ -1,0 +1,20 @@
+/* Styles specific to employer job overview and job specific pages */
+
+/* Example: Style the job listing container */
+.job-listings {
+    /* Add styles here */
+}
+
+/* Example: Style individual job listings */
+.job-listing {
+    border: 1px solid var(--border-color-light);
+    padding: var(--spacing-medium);
+    margin-bottom: var(--spacing-medium);
+    border-radius: var(--border-radius-medium);
+}
+
+/* Example: Style job detail sections */
+.job-description,
+.job-requirements {
+    margin-top: var(--spacing-large);
+} 

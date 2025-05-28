@@ -1,0 +1,112 @@
+/* Forms CSS */
+
+.form-container {
+    background-color: var(--white);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: var(--spacing-8);
+    width: 100%;
+}
+
+.form-title {
+    color: var(--gray-900);
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: var(--spacing-6);
+}
+
+.form-group {
+    margin-bottom: var(--spacing-4);
+    width: 90%;
+}
+
+.form-label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: var(--spacing-2);
+    color: var(--gray-700);
+}
+
+.form-input {
+    width: 90%;
+    padding: var(--spacing-3) var(--spacing-4);
+    border: 1px solid var(--gray-300);
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--blue-500);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+}
+
+.form-input::placeholder {
+    color: var(--gray-400);
+}
+
+.form-input.error {
+    border-color: #ef4444;
+}
+
+.form-error {
+    color: #ef4444;
+    font-size: 0.875rem;
+    margin-top: var(--spacing-1);
+}
+
+.form-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: var(--spacing-6);
+}
+
+.form-helper-text {
+    color: var(--gray-500);
+    font-size: 0.875rem;
+}
+
+.form-link {
+    color: var(--blue-600);
+    font-size: 0.875rem;
+    text-decoration: none;
+}
+
+.form-link:hover {
+    text-decoration: underline;
+}
+
+.form-divider {
+    display: flex;
+    align-items: center;
+    margin: var(--spacing-6) 0;
+    color: var(--gray-500);
+    font-size: 0.875rem;
+}
+
+.form-divider::before,
+.form-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background-color: var(--gray-200);
+}
+
+.form-divider::before {
+    margin-right: var(--spacing-4);
+}
+
+.form-divider::after {
+    margin-left: var(--spacing-4);
+}
+
+.form-checkbox-group {
+    display: flex;
+    align-items: center;
+}
+
+.form-checkbox {
+    margin-right: var(--spacing-2);
+}

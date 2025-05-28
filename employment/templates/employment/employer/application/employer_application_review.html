@@ -1,0 +1,125 @@
+{% extends 'core/layout/layout.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Review Job Posting: {{ job_posting.title }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .detail-label {
+        font-weight: 500; /* medium */
+        color: #4b5563; /* gray-600 */
+    }
+    .detail-value {
+        color: #1f2937; /* gray-800 */
+    }
+    .section-divider {
+        border-top-width: 1px;
+        border-color: #e5e7eb; /* gray-200 */
+        margin-top: 1.5rem; /* my-6 */
+        margin-bottom: 1.5rem; /* my-6 */
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-100 py-8">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl">
+        <div class="mb-6">
+            <a href="{% url 'employment:employer_dashboard' %}" class="text-sm font-medium text-indigo-600 hover:text-indigo-500 inline-flex items-center">
+                <i class="ri-arrow-left-line mr-1"></i> Back to Dashboard
+            </a>
+        </div>
+
+        <div class="bg-white shadow-xl rounded-lg overflow-hidden">
+            <div class="px-6 py-8">
+                <div class="text-center mb-8">
+                    <h1 class="text-3xl font-bold text-gray-800">Review Job Posting</h1>
+                    <p class="text-gray-600 mt-1">Please review the details of your job posting before publishing.</p>
+                </div>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="mb-6 p-4 rounded-md 
+                                    {% if message.tags == 'success' %}bg-green-100 text-green-700 border border-green-400
+                                    {% elif message.tags == 'error' %}bg-red-100 text-red-700 border border-red-400
+                                    {% else %}bg-blue-100 text-blue-700 border border-blue-400{% endif %}" 
+                             role="alert">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <div class="space-y-6">
+                    <!-- Basic Information -->
+                    <section>
+                        <h2 class="text-xl font-semibold text-gray-700 mb-3 inline-flex items-center"><i class="ri-file-list-line mr-2 text-indigo-500"></i>Basic Information</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                            <div><p class="detail-label">Job Title:</p><p class="detail-value">{{ job_posting.title }}</p></div>
+                            <div><p class="detail-label">Location:</p><p class="detail-value">{{ job_posting.location }}</p></div>
+                        </div>
+                        <div class="mt-4"><p class="detail-label">Description:</p><p class="detail-value whitespace-pre-wrap">{{ job_posting.description }}</p></div>
+                    </section>
+
+                    <div class="section-divider"></div>
+
+                    <!-- Compensation and Hours -->
+                    <section>
+                        <h2 class="text-xl font-semibold text-gray-700 mb-3 inline-flex items-center"><i class="ri-money-pound-circle-line mr-2 text-indigo-500"></i>Compensation & Hours</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                            <div><p class="detail-label">Hourly Rate:</p><p class="detail-value">£{{ job_posting.hourly_rate|floatformat:2|intcomma }}</p></div>
+                            <div><p class="detail-label">Estimated Hours (per week):</p><p class="detail-value">{{ job_posting.estimated_hours }} hours</p></div>
+                            <div><p class="detail-label">Accepting Applications Until:</p><p class="detail-value">{{ job_posting.accepting_application_date|date:"F j, Y" }}</p></div>
+                        </div>
+                    </section>
+
+                    {% if job_posting.skills.all %}
+                    <div class="section-divider"></div>
+                    <section>
+                        <h2 class="text-xl font-semibold text-gray-700 mb-3 inline-flex items-center"><i class="ri-tools-line mr-2 text-indigo-500"></i>Required Skills</h2>
+                        <div class="flex flex-wrap gap-2">
+                            {% for skill in job_posting.skills.all %}
+                                <span class="px-3 py-1 text-sm font-medium bg-indigo-100 text-indigo-700 rounded-full">{{ skill.name }}</span>
+                            {% endfor %}
+                        </div>
+                    </section>
+                    {% endif %}
+
+                    {% if job_posting.stage.all %}
+                    <div class="section-divider"></div>
+                    <section>
+                        <h2 class="text-xl font-semibold text-gray-700 mb-3 inline-flex items-center"><i class="ri-road-map-line mr-2 text-indigo-500"></i>Application Stages</h2>
+                        <ol class="list-decimal list-inside space-y-1 text-gray-700">
+                            {% for stage in job_posting.stage.all %}
+                                <li>{{ stage.name }}</li>
+                            {% endfor %}
+                        </ol>
+                    </section>
+                    {% endif %}
+
+                    {% if job_posting.additional_info %}
+                    <div class="section-divider"></div>
+                    <section>
+                        <h2 class="text-xl font-semibold text-gray-700 mb-3 inline-flex items-center"><i class="ri-information-line mr-2 text-indigo-500"></i>Additional Information</h2>
+                        <p class="detail-value whitespace-pre-wrap">{{ job_posting.additional_info }}</p>
+                    </section>
+                    {% endif %}
+                </div>
+
+                <div class="mt-10 pt-8 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <a href="{% url 'employment:employer_application_edit' job_id=job_posting.id %}" class="w-full sm:w-auto flex items-center justify-center px-6 py-3 border border-gray-300 rounded-md shadow-sm text-base font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        <i class="ri-pencil-line mr-2"></i> Edit Posting
+                    </a>
+                    <form method="post" action="{% url 'employment:employer_application_submit' job_id=job_posting.id %}" class="w-full sm:w-auto">
+                        {% csrf_token %}
+                        <button type="submit" class="w-full flex items-center justify-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                            <i class="ri-send-plane-fill mr-2"></i> Publish Job Posting
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

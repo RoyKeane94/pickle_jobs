@@ -1,0 +1,89 @@
+{% extends 'core/layout/layout.html' %}
+{% load static %}
+
+{% block title %}Pickle Jobs - Find Your Next Opportunity{% endblock %}
+
+{% block extra_css %}
+{# Page-specific CSS can be added here if needed in the future #}
+{% endblock %}
+
+{% block content %}
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="#" class="navbar__brand">Pickle Jobs</a>
+            <div>
+                <a href="#" class="navbar__link">Jobs</a>
+                <a href="#" class="navbar__link">Companies</a>
+                <a href="#" class="navbar__button">Post a Job</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="container">
+            <h1 class="hero__title">Find Your Dream Job</h1>
+            <p class="hero__subtitle">Search thousands of job openings from top companies.</p>
+            <form class="hero__search-form">
+                <input type="text" placeholder="Job title, keywords, or company" class="search-input">
+                <input type="text" placeholder="Location" class="location-input">
+                <button type="submit" class="search-button">Search</button>
+            </form>
+        </div>
+    </header>
+
+    <!-- Featured Jobs Section -->
+    <section class="jobs-section">
+        <div class="container">
+            <h2 class="section-title">Featured Jobs</h2>
+            <div class="jobs-grid">
+                <!-- Job Card Example 1 -->
+                <div class="job-card">
+                    <div class="job-card__content">
+                        <h3 class="job-card__title">Software Engineer</h3>
+                        <p class="job-card__company">Tech Corp</p>
+                        <p class="job-card__location">New York, NY</p>
+                        <p class="job-card__description">Develop and maintain web applications using Python and Django.</p>
+                        <a href="#" class="job-card__link">View Details &rarr;</a>
+                    </div>
+                </div>
+                <!-- Job Card Example 2 -->
+                <div class="job-card">
+                    <div class="job-card__content">
+                        <h3 class="job-card__title">Product Manager</h3>
+                        <p class="job-card__company">Innovate Solutions</p>
+                        <p class="job-card__location">San Francisco, CA</p>
+                        <p class="job-card__description">Lead the product strategy and roadmap for our core platform.</p>
+                        <a href="#" class="job-card__link">View Details &rarr;</a>
+                    </div>
+                </div>
+                <!-- Job Card Example 3 -->
+                <div class="job-card">
+                    <div class="job-card__content">
+                        <h3 class="job-card__title">UX/UI Designer</h3>
+                        <p class="job-card__company">Creative Minds</p>
+                        <p class="job-card__location">Remote</p>
+                        <p class="job-card__description">Design intuitive and engaging user interfaces for mobile apps.</p>
+                        <a href="#" class="job-card__link">View Details &rarr;</a>
+                    </div>
+                </div>
+            </div>
+            <a href="#" class="browse-all">Browse All Jobs</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Pickle Jobs. All rights reserved.</p>
+            <div class="footer__links">
+                <a href="#" class="footer__link">About</a>
+                <a href="#" class="footer__link">Contact</a>
+                <a href="#" class="footer__link">Terms of Service</a>
+                <a href="#" class="footer__link">Privacy Policy</a>
+            </div>
+        </div>
+    </footer>
+{% endblock %}
+

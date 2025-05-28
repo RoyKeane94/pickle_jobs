@@ -1,0 +1,199 @@
+{% extends 'core/layout/layout.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}Register | Pickle Jobs{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/accounts/register.css' %}">
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle radio button styling
+        const radioOptions = document.querySelectorAll('.radio-option');
+        const userTypeInputs = document.querySelectorAll('input[name="user_type"]');
+        const employerFields = document.querySelector('.employer-fields');
+
+        // Initialize state on page load
+        updateEmployerFieldsVisibility();
+        
+        userTypeInputs.forEach(input => {
+            input.addEventListener('change', function() {
+                // Update radio button styling
+                radioOptions.forEach(option => {
+                    if (option.querySelector('input').checked) {
+                        option.classList.add('selected');
+                    } else {
+                        option.classList.remove('selected');
+                    }
+                });
+                
+                // Show/hide employer fields
+                updateEmployerFieldsVisibility();
+            });
+        });
+        
+        function updateEmployerFieldsVisibility() {
+            const selectedUserType = document.querySelector('input[name="user_type"]:checked')?.value;
+            if (selectedUserType === 'employer') {
+                employerFields.style.display = 'block';
+            } else {
+                employerFields.style.display = 'none';
+            }
+        }
+    });
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="register-container">
+    <!-- Left side: Pickle branding -->
+    <section class="register-brand-section bg-indigo-600 p-8 md:p-12 flex flex-col justify-center items-center text-center">
+        <div class="brand-logo text-white text-5xl md:text-6xl font-bold mb-4">Pickle</div>
+        <p class="brand-tagline text-indigo-100 text-lg md:text-xl">The perfect platform for finding the perfect job opportunity.</p>
+    </section>
+    
+    <!-- Right side: Registration form -->
+    <section class="register-form-section py-8 px-4 md:px-8">
+        <div class="max-w-lg mx-auto">
+            <div class="register-header text-center mb-8">
+                <h1 class="register-title text-3xl font-bold text-indigo-600">Create your account</h1>
+                <p class="register-subtitle text-gray-600">Join Pickle Jobs to find your next opportunity</p>
+            </div>
+            
+            <div class="register-form">
+                <form method="post" action="{% url 'accounts:register' %}" class="space-y-6">
+                    {% csrf_token %}
+                    
+                    {% if form.non_field_errors %}
+                        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                            {% for error in form.non_field_errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">{{ form.user_type.label }}</label>
+                        <div class="form-radio-group grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {% for radio in form.user_type %}
+                                <label class="radio-option {% if radio.data.value == 'employee' and not form.user_type.value or radio.data.value == form.user_type.value %}selected{% endif %} flex items-center p-3 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50 has-[:checked]:bg-indigo-50 has-[:checked]:border-indigo-500 has-[:checked]:ring-2 has-[:checked]:ring-indigo-500">
+                                    {{ radio.tag }}
+                                    <span class="radio-option-label text-sm font-medium text-gray-700 ml-2">{{ radio.choice_label }}</span>
+                                </label>
+                            {% endfor %}
+                        </div>
+                        {% if form.user_type.errors %}
+                            <div class="text-red-500 text-xs mt-1">
+                                {% for error in form.user_type.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <label for="{{ form.first_name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{ form.first_name.label }}</label>
+                        {% render_field form.first_name class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" %}
+                        {% if form.first_name.errors %}
+                            <div class="text-red-500 text-xs mt-1">
+                                {% for error in form.first_name.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <label for="{{ form.last_name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{ form.last_name.label }}</label>
+                        {% render_field form.last_name class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" %}
+                        {% if form.last_name.errors %}
+                            <div class="text-red-500 text-xs mt-1">
+                                {% for error in form.last_name.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{ form.email.label }}</label>
+                        {% render_field form.email class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" %}
+                        {% if form.email.errors %}
+                            <div class="text-red-500 text-xs mt-1">
+                                {% for error in form.email.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <label for="{{ form.password1.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{ form.password1.label }}</label>
+                        {% render_field form.password1 class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" %}
+                        {% if form.password1.errors %}
+                            <div class="text-red-500 text-xs mt-1">
+                                {% for error in form.password1.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <label for="{{ form.password2.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{ form.password2.label }}</label>
+                        {% render_field form.password2 class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" %}
+                        {% if form.password2.errors %}
+                            <div class="text-red-500 text-xs mt-1">
+                                {% for error in form.password2.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Employer-specific fields -->
+                    <div class="employer-fields space-y-6" style="display: none;">
+                        <div>
+                            <label for="{{ form.company_name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{ form.company_name.label }}</label>
+                            {% render_field form.company_name class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" %}
+                            {% if form.company_name.errors %}
+                                <div class="text-red-500 text-xs mt-1">
+                                    {% for error in form.company_name.errors %}
+                                        <p>{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div>
+                            <label for="{{ form.company_description.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{ form.company_description.label }}</label>
+                            {% render_field form.company_description class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" rows="3" %}
+                            {% if form.company_description.errors %}
+                                <div class="text-red-500 text-xs mt-1">
+                                    {% for error in form.company_description.errors %}
+                                        <p>{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Create Account
+                    </button>
+                    
+                    <div class="register-footer text-center mt-4">
+                        <p class="text-sm text-gray-600">
+                            Already have an account? 
+                            <a href="{% url 'accounts:login' %}" class="font-medium text-indigo-600 hover:text-indigo-500">Login</a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %} 

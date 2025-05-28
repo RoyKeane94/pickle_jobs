@@ -1,0 +1,1 @@
+django-tailwind==4.0.1

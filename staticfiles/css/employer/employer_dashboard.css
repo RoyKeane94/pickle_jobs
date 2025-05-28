@@ -1,0 +1,234 @@
+/* Styles specific to the Employer Dashboard */
+/* --- Temporarily emptied for debugging --- */
+
+/* Inherit or adapt styles from employee_dashboard.css as needed */
+
+/* Welcome Header */
+.welcome-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-large);
+    padding: var(--spacing-medium) 0;
+    border-bottom: 1px solid var(--border-color-light);
+}
+
+.welcome-title {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--spacing-xsmall);
+}
+
+.welcome-subtitle {
+    color: var(--text-color-secondary);
+}
+
+/* General Dashboard Sections */
+.dashboard-section {
+    background-color: var(--background-color-secondary);
+    border-radius: var(--border-radius-large);
+    padding: var(--spacing-large);
+    margin-bottom: var(--spacing-large);
+    box-shadow: var(--shadow-soft);
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start; /* Align items to the top */
+    margin-bottom: var(--spacing-medium);
+}
+
+.section-title {
+    font-size: var(--font-size-large);
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--spacing-xsmall);
+}
+
+.section-subtitle {
+    color: var(--text-color-secondary);
+    font-size: var(--font-size-small);
+}
+
+.empty-state-text {
+    color: var(--text-color-secondary);
+    text-align: center;
+    padding: var(--spacing-large) 0;
+}
+
+/* Two Column Grid */
+.dashboard-grid-two-cols {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid */
+    gap: var(--spacing-large);
+}
+
+/* Stats Section */
+.stats-section {
+    display: flex;
+    justify-content: space-around;
+    gap: var(--spacing-medium);
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    background-color: transparent; /* Remove background if desired */
+    box-shadow: none;
+    padding: 0;
+}
+
+.stat-card {
+    background-color: var(--background-color-secondary);
+    border-radius: var(--border-radius-medium);
+    padding: var(--spacing-medium);
+    text-align: center;
+    flex: 1; /* Allow cards to grow */
+    min-width: 150px; /* Minimum width for cards */
+    box-shadow: var(--shadow-soft);
+}
+
+.stat-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: inline-flex; /* Use flex to center icon */
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--spacing-small);
+    color: var(--text-color-white); /* White icon color */
+}
+
+/* Add specific background colors for different stats */
+.stat-icon.job-postings { background-color: var(--info-color); }
+.stat-icon.total-applicants { background-color: var(--success-color); }
+.stat-icon.interviews-scheduled { background-color: var(--warning-color); }
+
+.stat-icon i {
+    font-size: var(--font-size-large);
+}
+
+.stat-value {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--spacing-xsmall);
+}
+
+.stat-label {
+    font-weight: var(--font-weight-medium);
+    color: var(--text-color-primary);
+    margin-bottom: 0;
+}
+
+/* Processes Section */
+.processes-list {
+    /* Add list styles */
+}
+
+.process-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-medium) 0;
+    border-bottom: 1px solid var(--border-color-light);
+}
+
+.process-item:last-child {
+    border-bottom: none;
+}
+
+.process-details {
+    flex-grow: 1;
+    margin-right: var(--spacing-medium);
+}
+
+.process-title {
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--spacing-xsmall);
+}
+
+.process-info,
+.process-date {
+    font-size: var(--font-size-small);
+    color: var(--text-color-secondary);
+}
+
+.process-arrow i {
+    font-size: var(--font-size-large);
+    color: var(--text-color-secondary);
+}
+
+/* Messages Section (reuse employee styles or adapt) */
+.messages-list {
+    /* Add styles */
+}
+
+.message-item {
+    display: flex;
+    align-items: flex-start;
+    padding: var(--spacing-medium) 0;
+    border-bottom: 1px solid var(--border-color-light);
+}
+
+.message-item:last-child {
+    border-bottom: none;
+}
+
+.msg-sender-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: var(--spacing-medium);
+    overflow: hidden; /* Ensure image fits */
+    flex-shrink: 0;
+}
+
+.msg-sender-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatar-placeholder {
+    width: 100%;
+    height: 100%;
+    background-color: var(--primary-color-light);
+    color: var(--primary-color-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: var(--font-weight-bold);
+}
+
+.msg-details {
+    flex-grow: 1;
+}
+
+.msg-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: var(--spacing-xsmall);
+}
+
+.msg-sender {
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-medium);
+}
+
+.msg-time {
+    font-size: var(--font-size-xsmall);
+    color: var(--text-color-secondary);
+}
+
+.msg-role,
+.msg-preview {
+    font-size: var(--font-size-small);
+    color: var(--text-color-secondary);
+    margin-bottom: var(--spacing-xsmall);
+}
+
+.msg-preview {
+    color: var(--text-color-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 95%; /* Prevent overflow */
+    margin-bottom: 0;
+} 

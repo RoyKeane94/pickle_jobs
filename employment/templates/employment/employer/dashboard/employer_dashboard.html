@@ -1,0 +1,336 @@
+{% extends 'core/layout/layout.html' %}
+{% load static %}
+
+{% block title %}Employer Dashboard | Pickle Jobs{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/employment/dashboard/dashboard.css' %}">
+{% endblock %}
+
+{% block page_header %}
+
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-main-content">
+    <div class="dashboard-grid-two-cols">
+        <!-- Your Active Jobs Section -->
+        <section class="dashboard-section active-jobs-section">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">Your Active Jobs</h2>
+                    <p class="section-subtitle">Monitor and edit your job postings</p>
+                </div>
+                <a href="#" class="btn btn-sm btn-link">Manage Jobs</a>
+            </div>
+            <div class="tabs">
+                <button class="tab-link active" onclick="openTab(event, 'active-jobs')">Active (5)</button>
+                <button class="tab-link" onclick="openTab(event, 'draft-jobs')">Draft (2)</button>
+                <button class="tab-link" onclick="openTab(event, 'closed-jobs')">Closed (3)</button>
+            </div>
+
+            <div id="active-jobs" class="tab-content active-content">
+                {% for job in active_jobs %} {# Placeholder data, adapt as needed #}
+                <div class="job-card">
+                    <div class="job-card-content">
+                        <h4 class="job-title">{{ job.title|default:"Senior Frontend Developer" }}</h4>
+                        <p class="job-details">{{ job.department|default:"Engineering" }} • {{ job.location|default:"San Francisco, CA (Remote)" }}</p>
+                        <p class="job-stats">{{ job.applications|default:18 }} applications • {{ job.views|default:243 }} views • Posted {{ job.posted_ago|default:"2 weeks ago" }}</p>
+                    </div>
+                    <div class="job-card-actions">
+                        <button class="btn btn-icon"><i class="ri-pushpin-line"></i></button>
+                    </div>
+                </div>
+                {% empty %}
+                 <div class="job-card">
+                    <div class="job-card-content">
+                        <h4 class="job-title">Senior Frontend Developer</h4>
+                        <p class="job-details">Engineering • San Francisco, CA (Remote)</p>
+                        <p class="job-stats">18 applications • 243 views • Posted 2 weeks ago</p>
+                    </div>
+                    <div class="job-card-actions">
+                        <button class="btn btn-icon"><i class="ri-pushpin-line"></i></button>
+                    </div>
+                </div>
+                 <div class="job-card">
+                    <div class="job-card-content">
+                        <h4 class="job-title">UX/UI Designer</h4>
+                        <p class="job-details">Design • San Francisco, CA (Hybrid)</p>
+                        <p class="job-stats">12 applications • 197 views • Posted 1 week ago</p>
+                    </div>
+                    <div class="job-card-actions">
+                        <button class="btn btn-icon"><i class="ri-pushpin-line"></i></button>
+                    </div>
+                </div>
+                <div class="job-card">
+                    <div class="job-card-content">
+                        <h4 class="job-title">Backend Developer</h4>
+                        <p class="job-details">Engineering • Remote</p>
+                        <p class="job-stats">8 applications • 120 views • Posted 3 days ago</p>
+                    </div>
+                    <div class="job-card-actions">
+                        <button class="btn btn-icon"><i class="ri-pushpin-line"></i></button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+             <!-- Placeholder for Draft Jobs -->
+            <div id="draft-jobs" class="tab-content" style="display:none;">
+                <p class="empty-state-text">You have no draft job postings.</p>
+            </div>
+            <!-- Placeholder for Closed Jobs -->
+            <div id="closed-jobs" class="tab-content" style="display:none;">
+                <p class="empty-state-text">You have no closed job postings.</p>
+            </div>
+
+            <button class="btn btn-primary btn-full-width btn-with-icon">
+                <i class="ri-add-line"></i> Create New Job
+            </button>
+        </section>
+
+        <!-- Recent Messages Section -->
+        <section class="dashboard-section recent-messages-section">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">Recent Messages</h2>
+                    <p class="section-subtitle">Stay in touch with candidates and applicants</p>
+                </div>
+                <a href="#" class="btn btn-sm btn-link">View All</a>
+            </div>
+            <div class="messages-list">
+                {% for msg in recent_messages %} {# Placeholder data, adapt as needed #}
+                <div class="message-item">
+                    <div class="msg-sender-avatar">
+                        {% if msg.avatar_url %}
+                        <img src="{{ msg.avatar_url }}" alt="{{ msg.sender_name }}">
+                        {% else %}
+                        <div class="avatar-placeholder">{{ msg.sender_name|slice:":1"|default:"A" }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="msg-details">
+                        <div class="msg-header">
+                            <h4 class="msg-sender">{{ msg.sender_name|default:"Alex Johnson" }}</h4>
+                            <span class="msg-time">{{ msg.time_ago|default:"2 hours ago" }}</span>
+                        </div>
+                        <p class="msg-preview">{{ msg.preview|default:"Thank you for considering my application. I'm available for an interview a..." }}</p>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="message-item">
+                    <div class="msg-sender-avatar">
+                        <div class="avatar-placeholder">A</div>
+                    </div>
+                    <div class="msg-details">
+                        <div class="msg-header">
+                            <h4 class="msg-sender">Alex Johnson</h4>
+                            <span class="msg-time">2 hours ago</span>
+                        </div>
+                        <p class="msg-preview">Thank you for considering my application. I'm available for an interview a...</p>
+                    </div>
+                </div>
+                <div class="message-item">
+                    <div class="msg-sender-avatar">
+                        <div class="avatar-placeholder">S</div>
+                    </div>
+                    <div class="msg-details">
+                        <div class="msg-header">
+                            <h4 class="msg-sender">Sarah Miller</h4>
+                            <span class="msg-time">Yesterday</span>
+                        </div>
+                        <p class="msg-role">UX/UI Designer Applicant</p>
+                        <p class="msg-preview">I've attached some additional portfolio samples as requested. Looking for...</p>
+                    </div>
+                </div>
+                 <div class="message-item">
+                    <div class="msg-sender-avatar">
+                        <div class="avatar-placeholder">M</div>
+                    </div>
+                    <div class="msg-details">
+                        <div class="msg-header">
+                            <h4 class="msg-sender">Michael Chen</h4>
+                            <span class="msg-time">3 days ago</span>
+                        </div>
+                        <p class="msg-role">Backend Developer Applicant</p>
+                        <p class="msg-preview">I'm excited about the opportunity to join your team. I have experience with th...</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <button class="btn btn-outline-primary btn-full-width">Send New Message</button>
+        </section>
+    </div>
+
+    <!-- Recent Applications Section -->
+    <section class="dashboard-section recent-applications-section">
+        <div class="section-header">
+            <div>
+                <h2 class="section-title">Recent Applications</h2>
+                <p class="section-subtitle">Review and manage candidate applications</p>
+            </div>
+            <div class="applications-actions">
+                <div class="search-bar">
+                    <i class="ri-search-line"></i>
+                    <input type="text" placeholder="Search candidates...">
+                </div>
+                <a href="#" class="btn btn-sm btn-link">View All</a>
+            </div>
+        </div>
+        <div class="applications-list">
+            {% for app in recent_applications %} {# Placeholder data, adapt as needed #}
+            <div class="application-card">
+                <div class="applicant-info">
+                    <div class="applicant-avatar">
+                         {% if app.avatar_url %}
+                        <img src="{{ app.avatar_url }}" alt="{{ app.name }}">
+                        {% else %}
+                        <div class="avatar-placeholder">{{ app.name|slice:":1"|default:"A" }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="applicant-details">
+                        <h4 class="applicant-name">{{ app.name|default:"Alex Johnson" }}</h4>
+                        <p class="applicant-role-experience">{{ app.role|default:"Senior Frontend Developer" }} • {{ app.experience|default:"5 years experience" }}</p>
+                        <div class="applicant-skills">
+                            
+                            <span class="skill-tag">{{ skill }}</span>
+                            
+                        </div>
+                        <p class="applicant-applied-date">Applied on {{ app.applied_date|default:"May 15, 2023" }}</p>
+                    </div>
+                </div>
+                <div class="application-status-actions">
+                    <span class="status-badge status-{{ app.status_class|default:"shortlisted" }}">{{ app.status_text|default:"Shortlisted" }}</span>
+                    <div class="application-actions">
+                        <button class="btn btn-sm btn-outline-secondary">View CV</button>
+                        <button class="btn btn-sm btn-primary">Contact</button>
+                    </div>
+                    <span class="match-percentage">{{ app.match_percentage|default:"92"}}% Match</span>
+                </div>
+            </div>
+            {% empty %}
+             <div class="application-card">
+                <div class="applicant-info">
+                    <div class="applicant-avatar">
+                        <div class="avatar-placeholder">A</div>
+                    </div>
+                    <div class="applicant-details">
+                        <h4 class="applicant-name">Alex Johnson</h4>
+                        <p class="applicant-role-experience">Senior Frontend Developer • 5 years experience</p>
+                        <div class="applicant-skills">
+                            <span class="skill-tag">React</span>
+                            <span class="skill-tag">TypeScript</span>
+                            <span class="skill-tag">Next.js</span>
+                        </div>
+                        <p class="applicant-applied-date">Applied on May 15, 2023</p>
+                    </div>
+                </div>
+                <div class="application-status-actions">
+                    <span class="status-badge status-shortlisted">Shortlisted</span>
+                    <div class="application-actions">
+                        <button class="btn btn-sm btn-outline-secondary">View CV</button>
+                        <button class="btn btn-sm btn-primary">Contact</button>
+                    </div>
+                    <span class="match-percentage">92% Match</span>
+                </div>
+            </div>
+             <div class="application-card">
+                <div class="applicant-info">
+                    <div class="applicant-avatar">
+                        <div class="avatar-placeholder">S</div>
+                    </div>
+                    <div class="applicant-details">
+                        <h4 class="applicant-name">Sarah Miller</h4>
+                        <p class="applicant-role-experience">UX/UI Designer • 4 years experience</p>
+                        <div class="applicant-skills">
+                            <span class="skill-tag">Figma</span>
+                            <span class="skill-tag">Adobe XD</span>
+                            <span class="skill-tag">UI Design</span>
+                        </div>
+                        <p class="applicant-applied-date">Applied on May 18, 2023 • Interview at 10:00 AM</p>
+                    </div>
+                </div>
+                <div class="application-status-actions">
+                    <span class="status-badge status-interview">Interview Scheduled</span>
+                    <div class="application-actions">
+                        <button class="btn btn-sm btn-outline-secondary">View CV</button>
+                        <button class="btn btn-sm btn-primary">Contact</button>
+                    </div>
+                    <span class="match-percentage">88% Match</span>
+                </div>
+            </div>
+            <div class="application-card">
+                <div class="applicant-info">
+                    <div class="applicant-avatar">
+                        <div class="avatar-placeholder">M</div>
+                    </div>
+                    <div class="applicant-details">
+                        <h4 class="applicant-name">Michael Chen</h4>
+                        <p class="applicant-role-experience">Backend Developer • 3 years experience</p>
+                        <div class="applicant-skills">
+                            <span class="skill-tag">Node.js</span>
+                            <span class="skill-tag">Express</span>
+                            <span class="skill-tag">MongoDB</span>
+                        </div>
+                        <p class="applicant-applied-date">Applied on May 14, 2023</p>
+                    </div>
+                </div>
+                <div class="application-status-actions">
+                    <span class="status-badge status-review">Under Review</span>
+                    <div class="application-actions">
+                        <button class="btn btn-sm btn-outline-secondary">View CV</button>
+                        <button class="btn btn-sm btn-primary">Contact</button>
+                    </div>
+                    <span class="match-percentage">85% Match</span>
+                </div>
+            </div>
+            <div class="application-card">
+                <div class="applicant-info">
+                    <div class="applicant-avatar">
+                        <div class="avatar-placeholder">E</div>
+                    </div>
+                    <div class="applicant-details">
+                        <h4 class="applicant-name">Emily Rodriguez</h4>
+                        <p class="applicant-role-experience">Product Manager • 6 years experience</p>
+                        <div class="applicant-skills">
+                            <span class="skill-tag">Product Strategy</span>
+                            <span class="skill-tag">Agile</span>
+                             <span class="skill-tag">User Research</span>
+                        </div>
+                        <p class="applicant-applied-date">Applied on May 13, 2023</p>
+                    </div>
+                </div>
+                <div class="application-status-actions">
+                    <span class="status-badge status-new">New Application</span>
+                    <div class="application-actions">
+                        <button class="btn btn-sm btn-outline-secondary">View CV</button>
+                        <button class="btn btn-sm btn-primary">Contact</button>
+                    </div>
+                    <span class="match-percentage">79% Match</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <button class="btn btn-outline-primary btn-full-width btn-load-more">Load More Applications</button>
+    </section>
+</div>
+
+<script>
+function openTab(evt, tabName) {
+  var i, tabcontent, tablinks;
+  tabcontent = document.getElementsByClassName("tab-content");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+    tabcontent[i].classList.remove("active-content");
+  }
+  tablinks = document.getElementsByClassName("tab-link");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].classList.remove("active");
+  }
+  document.getElementById(tabName).style.display = "block";
+  document.getElementById(tabName).classList.add("active-content");
+  evt.currentTarget.classList.add("active");
+}
+
+// Get the element with id="defaultOpen" and click on it
+// document.getElementById("defaultOpen").click(); // You might want to set a default open tab
+</script>
+{% endblock %}

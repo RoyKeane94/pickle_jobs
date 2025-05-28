@@ -1,0 +1,242 @@
+/* Homepage specific styles using root.css variables */
+
+/* Navbar */
+.navbar {
+  background-color: var(--white);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: var(--spacing-4);
+}
+
+.navbar__brand {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--blue-600);
+}
+
+.navbar__link {
+  color: var(--gray-600);
+  padding: 0 var(--spacing-3);
+  transition: color 0.2s ease-in-out;
+}
+
+.navbar__link:hover {
+  color: var(--blue-600);
+  text-decoration: none;
+}
+
+.navbar__button {
+  background-color: var(--blue-500);
+  color: var(--white);
+  padding: var(--spacing-2) var(--spacing-4);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.navbar__button:hover {
+  background-color: var(--blue-600);
+  text-decoration: none;
+}
+
+/* Hero Section */
+.hero {
+  background-color: var(--blue-500);
+  color: var(--white);
+  padding: 5rem 0;
+  text-align: center;
+}
+
+.hero__title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  margin-bottom: var(--spacing-4);
+}
+
+.hero__subtitle {
+  font-size: 1.25rem;
+  margin-bottom: var(--spacing-8);
+  max-width: 36rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.hero__search-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  max-width: 42rem;
+  margin: 0 auto;
+}
+
+@media (min-width: 640px) {
+  .hero__search-form {
+    flex-direction: row;
+  }
+}
+
+.search-input {
+  flex-grow: 1;
+  padding: var(--spacing-3) var(--spacing-4);
+  border-radius: var(--radius-md);
+  border: none;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  color: var(--gray-800);
+}
+
+.search-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--blue-300);
+}
+
+.location-input {
+  padding: var(--spacing-3) var(--spacing-4);
+  border-radius: var(--radius-md);
+  border: none;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  color: var(--gray-800);
+}
+
+@media (min-width: 640px) {
+  .location-input {
+    width: 33%;
+  }
+}
+
+.search-button {
+  background-color: var(--white);
+  color: var(--blue-600);
+  padding: var(--spacing-3) var(--spacing-6);
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.search-button:hover {
+  background-color: var(--gray-100);
+}
+
+/* Featured Jobs Section */
+.jobs-section {
+  padding: 4rem 0;
+}
+
+.section-title {
+  font-size: 1.875rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--gray-800);
+  margin-bottom: 3rem;
+}
+
+.jobs-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-8);
+}
+
+@media (min-width: 768px) {
+  .jobs-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 1024px) {
+  .jobs-grid {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+.job-card {
+  background-color: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease-in-out;
+}
+
+.job-card:hover {
+  transform: scale(1.05);
+}
+
+.job-card__content {
+  padding: var(--spacing-6);
+}
+
+.job-card__title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--gray-800);
+  margin-bottom: var(--spacing-2);
+}
+
+.job-card__company {
+  color: var(--gray-600);
+  margin-bottom: var(--spacing-1);
+}
+
+.job-card__location {
+  color: var(--gray-500);
+  font-size: 0.875rem;
+  margin-bottom: var(--spacing-4);
+}
+
+.job-card__description {
+  color: var(--gray-700);
+  font-size: 0.875rem;
+  margin-bottom: var(--spacing-4);
+}
+
+.job-card__link {
+  color: var(--blue-500);
+  font-weight: 600;
+  display: inline-block;
+  transition: color 0.2s ease-in-out;
+}
+
+.job-card__link:hover {
+  color: var(--blue-600);
+  text-decoration: none;
+}
+
+.browse-all {
+  display: block;
+  background-color: var(--blue-500);
+  color: var(--white);
+  font-weight: 700;
+  padding: var(--spacing-3) var(--spacing-6);
+  border-radius: var(--radius-md);
+  margin: var(--spacing-12) auto 0;
+  text-align: center;
+  transition: background-color 0.2s ease-in-out;
+  width: fit-content;
+}
+
+.browse-all:hover {
+  background-color: var(--blue-600);
+  text-decoration: none;
+}
+
+/* Footer */
+.footer {
+  background-color: var(--gray-800);
+  color: var(--gray-400);
+  padding: var(--spacing-8) 0;
+  text-align: center;
+}
+
+.footer__links {
+  margin-top: var(--spacing-4);
+}
+
+.footer__link {
+  color: var(--gray-400);
+  padding: 0 var(--spacing-3);
+  transition: color 0.2s ease-in-out;
+}
+
+.footer__link:hover {
+  color: var(--blue-400);
+  text-decoration: none;
+}

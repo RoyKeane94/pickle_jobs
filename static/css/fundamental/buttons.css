@@ -1,0 +1,105 @@
+/* Button CSS */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    border-radius: var(--radius-md);
+    padding: var(--spacing-3) var(--spacing-6);
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+    text-decoration: none;
+    border: none;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+}
+
+/* Primary Button */
+.btn-primary {
+    background-color: var(--blue-600);
+    color: var(--white);
+}
+
+.btn-primary:hover {
+    background-color: var(--blue-700);
+}
+
+.btn-primary:active {
+    background-color: var(--blue-800);
+}
+
+/* Secondary Button */
+.btn-secondary {
+    background-color: var(--white);
+    color: var(--gray-800);
+    border: 1px solid var(--gray-300);
+}
+
+.btn-secondary:hover {
+    background-color: var(--gray-50);
+}
+
+.btn-secondary:active {
+    background-color: var(--gray-100);
+}
+
+/* Button Sizes */
+.btn-sm {
+    padding: var(--spacing-2) var(--spacing-4);
+    font-size: 0.875rem;
+}
+
+.btn-lg {
+    padding: var(--spacing-4) var(--spacing-8);
+    font-size: 1.125rem;
+}
+
+/* Full Width Button */
+.btn-full {
+    width: 100%;
+}
+
+/* Outline Buttons */
+.btn-outline-primary {
+    background-color: transparent;
+    color: var(--blue-600);
+    border: 1px solid var(--blue-600);
+}
+
+.btn-outline-primary:hover {
+    background-color: rgba(59, 130, 246, 0.1);
+}
+
+/* Disabled Button */
+.btn:disabled,
+.btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Icon Button */
+.btn-icon {
+    padding: var(--spacing-2);
+    border-radius: var(--radius-full);
+}
+
+.btn-icon svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+/* Button with icon */
+.btn-with-icon {
+    display: inline-flex;
+    align-items: center;
+}
+
+.btn-with-icon svg {
+    margin-right: var(--spacing-2);
+}

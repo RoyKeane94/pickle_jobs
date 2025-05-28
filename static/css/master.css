@@ -1,0 +1,16 @@
+/* Fundamental styles */
+@import "dist/styles.css";
+
+/* Core styles */
+@import "core/home/homepage.css";
+
+/* Account styles */
+@import "accounts/accounts.css";
+
+/* Employer application styles */
+@import "employment/application/employer_application.css";
+@import "employment/dashboard/dashboard.css";
+
+body {
+  background-color: var(--quinary-color);
+}
