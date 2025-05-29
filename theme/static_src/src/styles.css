@@ -1,12 +1,22 @@
 @import "tailwindcss";
 
 @theme {
-  /* Colour Palette */
+  /* Primary Brand Colors */
   --primary-color: #334559;
   --secondary-color: #415A77;
   --tertiary-color: #7b98b5;
   --quaternary-color: #d1dbe6;
   --quinary-color: #FAF9F6;
+
+  /* Accent Colors for Stats and UI Elements */
+  --color-success: #10B981;      /* Modern green for positive states */
+  --color-success-light: #D1FAE5; /* Light green background */
+  --color-warning: #F59E0B;       /* Vibrant orange for attention */
+  --color-warning-light: #FEF3C7; /* Light orange background */
+  --color-info: #3B82F6;          /* Bright blue for information */
+  --color-info-light: #DBEAFE;    /* Light blue background */
+  --color-accent: #8B5CF6;        /* Purple for highlights */
+  --color-accent-light: #EDE9FE;  /* Light purple background */
 
   /* Typography */
   --font-family-sans: 'Inter', sans-serif;

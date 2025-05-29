@@ -1,55 +1,69 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import JobPosting, JobSkill, JobStage
+from django.db.models import Count
+from .models import JobPosting, JobSkill, JobStage, JobApplication
 from .forms import JobPostingForm
 
 
 
+@login_required
 def employer_dashboard(request):
-    # Placeholder data - replace with actual data from your models
-    active_jobs_data = [
-        {
-            "title": "Senior Frontend Developer",
-            "department": "Engineering",
-            "location": "San Francisco, CA (Remote)",
-            "applications": 18,
-            "views": 243,
-            "posted_ago": "2 weeks ago"
-        },
-        {
-            "title": "UX/UI Designer",
-            "department": "Design",
-            "location": "San Francisco, CA (Hybrid)",
-            "applications": 12,
-            "views": 197,
-            "posted_ago": "1 week ago"
-        },
-        {
-            "title": "Backend Developer",
-            "department": "Engineering",
-            "location": "Remote",
-            "applications": 8,
-            "views": 120,
-            "posted_ago": "3 days ago"
-        }
-    ]
-
-    recent_messages_data = [
-
-    ]
-
-    recent_applications_data = [
-        
-    ]
-
-    context = {
-        'active_jobs': active_jobs_data,
-        'recent_messages': recent_messages_data,
-        'recent_applications': recent_applications_data,
-        # Add other context variables your template might need, e.g.
-        # 'user_company_name': request.user.employer_profile.company_name if hasattr(request.user, 'employer_profile') else request.user.username
+    """
+    Renders the employer dashboard with real-time data about job postings,
+    applications, and key statistics for the logged-in employer.
+    """
+    # Ensure user has an employer profile
+    if not hasattr(request.user, 'employer_profile'):
+        messages.error(request, 'You need an employer profile to access this dashboard.')
+        return redirect('core:home')
+    
+    employer_profile = request.user.employer_profile
+    
+    # Get all job postings for this employer with optimized queries
+    all_jobs = JobPosting.objects.filter(employer=employer_profile).select_related('employer__company')
+    
+    # Separate active (published) and draft jobs
+    active_jobs = all_jobs.filter(published=True).annotate(
+        application_count=Count('jobapplication')
+    ).order_by('-created_at')
+    
+    draft_jobs = all_jobs.filter(published=False).order_by('-updated_at')
+    
+    # Get recent applications for this employer's jobs
+    recent_applications = JobApplication.objects.filter(
+        job_posting__employer=employer_profile
+    ).select_related(
+        'employee__user', 'job_posting'
+    ).order_by('-created_at')[:5]
+    
+    # Calculate key statistics
+    total_jobs = all_jobs.count()
+    active_jobs_count = active_jobs.count()
+    draft_jobs_count = draft_jobs.count()
+    total_applications = JobApplication.objects.filter(
+        job_posting__employer=employer_profile
+    ).count()
+    
+    # Statistics for the dashboard cards
+    stats = {
+        'total_jobs': total_jobs,
+        'active_jobs': active_jobs_count,
+        'draft_jobs': draft_jobs_count,
+        'total_applications': total_applications,
     }
+    
+    # Messages placeholder - this would come from a messaging system when implemented
+    recent_messages = []
+    
+    context = {
+        'stats': stats,
+        'active_jobs': active_jobs,
+        'draft_jobs': draft_jobs,
+        'recent_applications': recent_applications,
+        'recent_messages': recent_messages,
+    }
+    
     return render(request, 'employment/employer/dashboard/employer_dashboard.html', context)
 
 @login_required

@@ -1,336 +1,359 @@
 {% extends 'core/layout/layout.html' %}
 {% load static %}
+{% load humanize %}
 
-{% block title %}Employer Dashboard | Pickle Jobs{% endblock %}
-
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/employment/dashboard/dashboard.css' %}">
-{% endblock %}
-
-{% block page_header %}
-
-{% endblock %}
+{% block title %}Employer Dashboard{% endblock %}
 
 {% block content %}
-<div class="dashboard-main-content">
-    <div class="dashboard-grid-two-cols">
-        <!-- Your Active Jobs Section -->
-        <section class="dashboard-section active-jobs-section">
-            <div class="section-header">
-                <div>
-                    <h2 class="section-title">Your Active Jobs</h2>
-                    <p class="section-subtitle">Monitor and edit your job postings</p>
+<div class="min-h-screen bg-[var(--quinary-color)] py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-[var(--primary-color)]">
+                Welcome back{% if user.first_name %}, {{ user.first_name }}{% endif %}
+            </h1>
+            <p class="text-[var(--tertiary-color)] mt-3 text-lg md:text-xl">
+                Manage your job postings and track applications
+            </p>
+        </div>
+
+        <!-- Key Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- Total Jobs -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600 mb-1">Total Jobs</p>
+                        <p class="text-3xl font-bold text-gray-900">{{ stats.total_jobs|default:0 }}</p>
+                    </div>
+                    <div class="p-3 rounded-full bg-gray-100">
+                        <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                    </div>
                 </div>
-                <a href="#" class="btn btn-sm btn-link">Manage Jobs</a>
-            </div>
-            <div class="tabs">
-                <button class="tab-link active" onclick="openTab(event, 'active-jobs')">Active (5)</button>
-                <button class="tab-link" onclick="openTab(event, 'draft-jobs')">Draft (2)</button>
-                <button class="tab-link" onclick="openTab(event, 'closed-jobs')">Closed (3)</button>
             </div>
 
-            <div id="active-jobs" class="tab-content active-content">
-                {% for job in active_jobs %} {# Placeholder data, adapt as needed #}
-                <div class="job-card">
-                    <div class="job-card-content">
-                        <h4 class="job-title">{{ job.title|default:"Senior Frontend Developer" }}</h4>
-                        <p class="job-details">{{ job.department|default:"Engineering" }} • {{ job.location|default:"San Francisco, CA (Remote)" }}</p>
-                        <p class="job-stats">{{ job.applications|default:18 }} applications • {{ job.views|default:243 }} views • Posted {{ job.posted_ago|default:"2 weeks ago" }}</p>
+            <!-- Active Jobs -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600 mb-1">Active Jobs</p>
+                        <p class="text-3xl font-bold text-gray-900">{{ stats.active_jobs|default:0 }}</p>
                     </div>
-                    <div class="job-card-actions">
-                        <button class="btn btn-icon"><i class="ri-pushpin-line"></i></button>
-                    </div>
-                </div>
-                {% empty %}
-                 <div class="job-card">
-                    <div class="job-card-content">
-                        <h4 class="job-title">Senior Frontend Developer</h4>
-                        <p class="job-details">Engineering • San Francisco, CA (Remote)</p>
-                        <p class="job-stats">18 applications • 243 views • Posted 2 weeks ago</p>
-                    </div>
-                    <div class="job-card-actions">
-                        <button class="btn btn-icon"><i class="ri-pushpin-line"></i></button>
+                    <div class="p-3 rounded-full bg-green-100">
+                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                        </svg>
                     </div>
                 </div>
-                 <div class="job-card">
-                    <div class="job-card-content">
-                        <h4 class="job-title">UX/UI Designer</h4>
-                        <p class="job-details">Design • San Francisco, CA (Hybrid)</p>
-                        <p class="job-stats">12 applications • 197 views • Posted 1 week ago</p>
-                    </div>
-                    <div class="job-card-actions">
-                        <button class="btn btn-icon"><i class="ri-pushpin-line"></i></button>
-                    </div>
-                </div>
-                <div class="job-card">
-                    <div class="job-card-content">
-                        <h4 class="job-title">Backend Developer</h4>
-                        <p class="job-details">Engineering • Remote</p>
-                        <p class="job-stats">8 applications • 120 views • Posted 3 days ago</p>
-                    </div>
-                    <div class="job-card-actions">
-                        <button class="btn btn-icon"><i class="ri-pushpin-line"></i></button>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-             <!-- Placeholder for Draft Jobs -->
-            <div id="draft-jobs" class="tab-content" style="display:none;">
-                <p class="empty-state-text">You have no draft job postings.</p>
-            </div>
-            <!-- Placeholder for Closed Jobs -->
-            <div id="closed-jobs" class="tab-content" style="display:none;">
-                <p class="empty-state-text">You have no closed job postings.</p>
             </div>
 
-            <button class="btn btn-primary btn-full-width btn-with-icon">
-                <i class="ri-add-line"></i> Create New Job
-            </button>
-        </section>
-
-        <!-- Recent Messages Section -->
-        <section class="dashboard-section recent-messages-section">
-            <div class="section-header">
-                <div>
-                    <h2 class="section-title">Recent Messages</h2>
-                    <p class="section-subtitle">Stay in touch with candidates and applicants</p>
+            <!-- Draft Jobs -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600 mb-1">Draft Jobs</p>
+                        <p class="text-3xl font-bold text-gray-900">{{ stats.draft_jobs|default:0 }}</p>
+                    </div>
+                    <div class="p-3 rounded-full bg-yellow-100">
+                        <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                        </svg>
+                    </div>
                 </div>
-                <a href="#" class="btn btn-sm btn-link">View All</a>
             </div>
-            <div class="messages-list">
-                {% for msg in recent_messages %} {# Placeholder data, adapt as needed #}
-                <div class="message-item">
-                    <div class="msg-sender-avatar">
-                        {% if msg.avatar_url %}
-                        <img src="{{ msg.avatar_url }}" alt="{{ msg.sender_name }}">
+
+            <!-- Applications -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600 mb-1">Applications</p>
+                        <p class="text-3xl font-bold text-gray-900">{{ stats.total_applications|default:0 }}</p>
+                    </div>
+                    <div class="p-3 rounded-full bg-blue-100">
+                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 515.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 919.288 0M15 7a3 3 0 11-6 0 3 3 0 616 0zm6 3a2 2 0 11-4 0 2 2 0 614 0zM7 10a2 2 0 11-4 0 2 2 0 614 0z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Main Content Area -->
+            <div class="lg:col-span-2 space-y-8">
+                
+                <!-- Active Jobs -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div class="p-2 rounded-full bg-green-100 mr-3">
+                                    <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                    </svg>
+                                </div>
+                                <h2 class="text-xl font-semibold text-gray-900">Active Job Postings</h2>
+                            </div>
+                            <span class="w-6 h-6 bg-green-600 text-white text-xs font-medium rounded-full flex items-center justify-center">
+                                {{ active_jobs|length }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        {% if active_jobs %}
+                            <div class="space-y-6">
+                                {% for job in active_jobs %}
+                                    <div class="border-b border-gray-100 pb-6 last:border-b-0 last:pb-0">
+                                        <div class="flex items-start justify-between">
+                                            <div class="flex-1">
+                                                <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ job.title }}</h3>
+                                                <div class="flex items-center text-sm text-gray-600 mb-3">
+                                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                                                    </svg>
+                                                    {{ job.location }}
+                                                </div>
+                                                <div class="flex items-center space-x-6 text-sm">
+                                                    <span class="font-medium text-green-600">
+                                                        <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/>
+                                                        </svg>
+                                                        £{{ job.hourly_rate }}/hr
+                                                    </span>
+                                                    <span class="font-medium text-blue-600">
+                                                        <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                                        </svg>
+                                                        {{ job.estimated_hours }}h/week
+                                                    </span>
+                                                    <span class="text-gray-500">
+                                                        Published {{ job.created_at|naturalday }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center space-x-3 ml-6">
+                                                <span class="px-3 py-1 text-sm font-medium bg-green-100 text-green-700 rounded-full">
+                                                    {{ job.application_count|default:0 }} applications
+                                                </span>
+                                                <a href="{% url 'employment:employer_application_edit' job_id=job.id %}" 
+                                                   class="text-gray-400 hover:text-gray-600 transition-colors">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                                    </svg>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
                         {% else %}
-                        <div class="avatar-placeholder">{{ msg.sender_name|slice:":1"|default:"A" }}</div>
+                            <div class="text-center py-12">
+                                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2M7 7h10"/>
+                                </svg>
+                                <h3 class="mt-2 text-sm font-medium text-gray-900">No active job postings</h3>
+                                <p class="mt-1 text-sm text-gray-500">Get started by creating your first job posting.</p>
+                                <div class="mt-6">
+                                    <a href="{% url 'employment:employer_application_create' %}" 
+                                       class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[var(--primary-color)] hover:bg-[var(--secondary-color)] transition-all duration-200">
+                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                                        </svg>
+                                        Create Job Posting
+                                    </a>
+                                </div>
+                            </div>
                         {% endif %}
                     </div>
-                    <div class="msg-details">
-                        <div class="msg-header">
-                            <h4 class="msg-sender">{{ msg.sender_name|default:"Alex Johnson" }}</h4>
-                            <span class="msg-time">{{ msg.time_ago|default:"2 hours ago" }}</span>
+                </div>
+
+                <!-- Draft Jobs -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div class="p-2 rounded-full bg-yellow-100 mr-3">
+                                    <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                                    </svg>
+                                </div>
+                                <h2 class="text-xl font-semibold text-gray-900">Draft Job Postings</h2>
+                            </div>
+                            <span class="w-6 h-6 bg-yellow-500 text-white text-xs font-medium rounded-full flex items-center justify-center">
+                                {{ draft_jobs|length }}
+                            </span>
                         </div>
-                        <p class="msg-preview">{{ msg.preview|default:"Thank you for considering my application. I'm available for an interview a..." }}</p>
+                    </div>
+                    <div class="p-6">
+                        {% if draft_jobs %}
+                            <div class="space-y-6">
+                                {% for job in draft_jobs %}
+                                    <div class="border-b border-gray-100 pb-6 last:border-b-0 last:pb-0">
+                                        <div class="flex items-start justify-between">
+                                            <div class="flex-1">
+                                                <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ job.title }}</h3>
+                                                <div class="flex items-center text-sm text-gray-600 mb-3">
+                                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                                                    </svg>
+                                                    {{ job.location }}
+                                                </div>
+                                                <div class="flex items-center space-x-6 text-sm">
+                                                    <span class="font-medium text-green-600">
+                                                        <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/>
+                                                        </svg>
+                                                        £{{ job.hourly_rate }}/hr
+                                                    </span>
+                                                    <span class="font-medium text-blue-600">
+                                                        <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                                        </svg>
+                                                        {{ job.estimated_hours }}h/week
+                                                    </span>
+                                                    <span class="text-gray-500">
+                                                        Last updated {{ job.updated_at|naturalday }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center space-x-3 ml-6">
+                                                <span class="px-3 py-1 text-sm font-medium bg-yellow-100 text-yellow-700 rounded-full">
+                                                    Draft
+                                                </span>
+                                                <a href="{% url 'employment:employer_application_review' job_id=job.id %}" 
+                                                   class="text-gray-400 hover:text-gray-600 transition-colors">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 616 0z"/>
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                                    </svg>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="text-center py-12">
+                                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 712-2h2a2 2 0 012 2"/>
+                                </svg>
+                                <h3 class="mt-2 text-sm font-medium text-gray-900">No draft job postings</h3>
+                                <p class="mt-1 text-sm text-gray-500">All your job postings are published or you haven't created any drafts yet.</p>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
-                {% empty %}
-                <div class="message-item">
-                    <div class="msg-sender-avatar">
-                        <div class="avatar-placeholder">A</div>
-                    </div>
-                    <div class="msg-details">
-                        <div class="msg-header">
-                            <h4 class="msg-sender">Alex Johnson</h4>
-                            <span class="msg-time">2 hours ago</span>
-                        </div>
-                        <p class="msg-preview">Thank you for considering my application. I'm available for an interview a...</p>
-                    </div>
-                </div>
-                <div class="message-item">
-                    <div class="msg-sender-avatar">
-                        <div class="avatar-placeholder">S</div>
-                    </div>
-                    <div class="msg-details">
-                        <div class="msg-header">
-                            <h4 class="msg-sender">Sarah Miller</h4>
-                            <span class="msg-time">Yesterday</span>
-                        </div>
-                        <p class="msg-role">UX/UI Designer Applicant</p>
-                        <p class="msg-preview">I've attached some additional portfolio samples as requested. Looking for...</p>
-                    </div>
-                </div>
-                 <div class="message-item">
-                    <div class="msg-sender-avatar">
-                        <div class="avatar-placeholder">M</div>
-                    </div>
-                    <div class="msg-details">
-                        <div class="msg-header">
-                            <h4 class="msg-sender">Michael Chen</h4>
-                            <span class="msg-time">3 days ago</span>
-                        </div>
-                        <p class="msg-role">Backend Developer Applicant</p>
-                        <p class="msg-preview">I'm excited about the opportunity to join your team. I have experience with th...</p>
-                    </div>
-                </div>
-                {% endfor %}
+
             </div>
-            <button class="btn btn-outline-primary btn-full-width">Send New Message</button>
-        </section>
+
+            <!-- Sidebar -->
+            <div class="space-y-8">
+                
+                <!-- Recent Applications -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div class="p-2 rounded-full bg-blue-100 mr-3">
+                                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 515.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 919.288 0M15 7a3 3 0 11-6 0 3 3 0 616 0zm6 3a2 2 0 11-4 0 2 2 0 614 0zM7 10a2 2 0 11-4 0 2 2 0 614 0z"/>
+                                    </svg>
+                                </div>
+                                <h2 class="text-lg font-semibold text-gray-900">Recent Applications</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        {% if recent_applications %}
+                            <div class="space-y-4">
+                                {% for application in recent_applications %}
+                                    <div class="pb-4 border-b border-gray-100 last:border-b-0 last:pb-0">
+                                        <h4 class="text-sm font-semibold text-gray-900">
+                                            {{ application.employee.user.first_name }} {{ application.employee.user.last_name }}
+                                        </h4>
+                                        <p class="text-xs text-gray-600 mt-1">Applied for: {{ application.job_posting.title }}</p>
+                                        <p class="text-xs text-gray-500 mt-1">{{ application.created_at|naturalday }}</p>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="text-center py-8">
+                                <svg class="mx-auto h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 515.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 919.288 0M15 7a3 3 0 11-6 0 3 3 0 616 0zm6 3a2 2 0 11-4 0 2 2 0 614 0zM7 10a2 2 0 11-4 0 2 2 0 614 0z"/>
+                                </svg>
+                                <h3 class="mt-2 text-sm font-medium text-gray-900">No recent applications</h3>
+                                <p class="mt-1 text-xs text-gray-500">Applications will appear here when candidates apply.</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Messages -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div class="p-2 rounded-full bg-gray-100 mr-3">
+                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                                    </svg>
+                                </div>
+                                <h2 class="text-lg font-semibold text-gray-900">Messages</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        {% if recent_messages %}
+                            <div class="space-y-4">
+                                {% for message in recent_messages %}
+                                    <div class="pb-4 border-b border-gray-100 last:border-b-0 last:pb-0">
+                                        <h4 class="text-sm font-semibold text-gray-900">{{ message.sender }}</h4>
+                                        <p class="text-xs text-gray-600 mt-1">{{ message.preview }}</p>
+                                        <p class="text-xs text-gray-500 mt-1">{{ message.timestamp|naturalday }}</p>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="text-center py-8">
+                                <svg class="mx-auto h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                                </svg>
+                                <h3 class="mt-2 text-sm font-medium text-gray-900">No messages</h3>
+                                <p class="mt-1 text-xs text-gray-500">Messages from candidates will appear here.</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <h2 class="text-lg font-semibold text-gray-900">Quick Actions</h2>
+                    </div>
+                    <div class="p-6 space-y-3">
+                        <a href="{% url 'employment:employer_application_create' %}" 
+                           class="block w-full text-center px-4 py-3 border border-[var(--secondary-color)] rounded-lg text-[var(--secondary-color)] hover:bg-[var(--secondary-color)] hover:text-white transition-all duration-200 font-medium">
+                            <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                            </svg>
+                            Create New Job
+                        </a>
+                        <button class="block w-full text-center px-4 py-3 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-700 transition-all duration-200 font-medium">
+                            <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                            </svg>
+                            View Messages
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </div>
-
-    <!-- Recent Applications Section -->
-    <section class="dashboard-section recent-applications-section">
-        <div class="section-header">
-            <div>
-                <h2 class="section-title">Recent Applications</h2>
-                <p class="section-subtitle">Review and manage candidate applications</p>
-            </div>
-            <div class="applications-actions">
-                <div class="search-bar">
-                    <i class="ri-search-line"></i>
-                    <input type="text" placeholder="Search candidates...">
-                </div>
-                <a href="#" class="btn btn-sm btn-link">View All</a>
-            </div>
-        </div>
-        <div class="applications-list">
-            {% for app in recent_applications %} {# Placeholder data, adapt as needed #}
-            <div class="application-card">
-                <div class="applicant-info">
-                    <div class="applicant-avatar">
-                         {% if app.avatar_url %}
-                        <img src="{{ app.avatar_url }}" alt="{{ app.name }}">
-                        {% else %}
-                        <div class="avatar-placeholder">{{ app.name|slice:":1"|default:"A" }}</div>
-                        {% endif %}
-                    </div>
-                    <div class="applicant-details">
-                        <h4 class="applicant-name">{{ app.name|default:"Alex Johnson" }}</h4>
-                        <p class="applicant-role-experience">{{ app.role|default:"Senior Frontend Developer" }} • {{ app.experience|default:"5 years experience" }}</p>
-                        <div class="applicant-skills">
-                            
-                            <span class="skill-tag">{{ skill }}</span>
-                            
-                        </div>
-                        <p class="applicant-applied-date">Applied on {{ app.applied_date|default:"May 15, 2023" }}</p>
-                    </div>
-                </div>
-                <div class="application-status-actions">
-                    <span class="status-badge status-{{ app.status_class|default:"shortlisted" }}">{{ app.status_text|default:"Shortlisted" }}</span>
-                    <div class="application-actions">
-                        <button class="btn btn-sm btn-outline-secondary">View CV</button>
-                        <button class="btn btn-sm btn-primary">Contact</button>
-                    </div>
-                    <span class="match-percentage">{{ app.match_percentage|default:"92"}}% Match</span>
-                </div>
-            </div>
-            {% empty %}
-             <div class="application-card">
-                <div class="applicant-info">
-                    <div class="applicant-avatar">
-                        <div class="avatar-placeholder">A</div>
-                    </div>
-                    <div class="applicant-details">
-                        <h4 class="applicant-name">Alex Johnson</h4>
-                        <p class="applicant-role-experience">Senior Frontend Developer • 5 years experience</p>
-                        <div class="applicant-skills">
-                            <span class="skill-tag">React</span>
-                            <span class="skill-tag">TypeScript</span>
-                            <span class="skill-tag">Next.js</span>
-                        </div>
-                        <p class="applicant-applied-date">Applied on May 15, 2023</p>
-                    </div>
-                </div>
-                <div class="application-status-actions">
-                    <span class="status-badge status-shortlisted">Shortlisted</span>
-                    <div class="application-actions">
-                        <button class="btn btn-sm btn-outline-secondary">View CV</button>
-                        <button class="btn btn-sm btn-primary">Contact</button>
-                    </div>
-                    <span class="match-percentage">92% Match</span>
-                </div>
-            </div>
-             <div class="application-card">
-                <div class="applicant-info">
-                    <div class="applicant-avatar">
-                        <div class="avatar-placeholder">S</div>
-                    </div>
-                    <div class="applicant-details">
-                        <h4 class="applicant-name">Sarah Miller</h4>
-                        <p class="applicant-role-experience">UX/UI Designer • 4 years experience</p>
-                        <div class="applicant-skills">
-                            <span class="skill-tag">Figma</span>
-                            <span class="skill-tag">Adobe XD</span>
-                            <span class="skill-tag">UI Design</span>
-                        </div>
-                        <p class="applicant-applied-date">Applied on May 18, 2023 • Interview at 10:00 AM</p>
-                    </div>
-                </div>
-                <div class="application-status-actions">
-                    <span class="status-badge status-interview">Interview Scheduled</span>
-                    <div class="application-actions">
-                        <button class="btn btn-sm btn-outline-secondary">View CV</button>
-                        <button class="btn btn-sm btn-primary">Contact</button>
-                    </div>
-                    <span class="match-percentage">88% Match</span>
-                </div>
-            </div>
-            <div class="application-card">
-                <div class="applicant-info">
-                    <div class="applicant-avatar">
-                        <div class="avatar-placeholder">M</div>
-                    </div>
-                    <div class="applicant-details">
-                        <h4 class="applicant-name">Michael Chen</h4>
-                        <p class="applicant-role-experience">Backend Developer • 3 years experience</p>
-                        <div class="applicant-skills">
-                            <span class="skill-tag">Node.js</span>
-                            <span class="skill-tag">Express</span>
-                            <span class="skill-tag">MongoDB</span>
-                        </div>
-                        <p class="applicant-applied-date">Applied on May 14, 2023</p>
-                    </div>
-                </div>
-                <div class="application-status-actions">
-                    <span class="status-badge status-review">Under Review</span>
-                    <div class="application-actions">
-                        <button class="btn btn-sm btn-outline-secondary">View CV</button>
-                        <button class="btn btn-sm btn-primary">Contact</button>
-                    </div>
-                    <span class="match-percentage">85% Match</span>
-                </div>
-            </div>
-            <div class="application-card">
-                <div class="applicant-info">
-                    <div class="applicant-avatar">
-                        <div class="avatar-placeholder">E</div>
-                    </div>
-                    <div class="applicant-details">
-                        <h4 class="applicant-name">Emily Rodriguez</h4>
-                        <p class="applicant-role-experience">Product Manager • 6 years experience</p>
-                        <div class="applicant-skills">
-                            <span class="skill-tag">Product Strategy</span>
-                            <span class="skill-tag">Agile</span>
-                             <span class="skill-tag">User Research</span>
-                        </div>
-                        <p class="applicant-applied-date">Applied on May 13, 2023</p>
-                    </div>
-                </div>
-                <div class="application-status-actions">
-                    <span class="status-badge status-new">New Application</span>
-                    <div class="application-actions">
-                        <button class="btn btn-sm btn-outline-secondary">View CV</button>
-                        <button class="btn btn-sm btn-primary">Contact</button>
-                    </div>
-                    <span class="match-percentage">79% Match</span>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-        <button class="btn btn-outline-primary btn-full-width btn-load-more">Load More Applications</button>
-    </section>
 </div>
-
-<script>
-function openTab(evt, tabName) {
-  var i, tabcontent, tablinks;
-  tabcontent = document.getElementsByClassName("tab-content");
-  for (i = 0; i < tabcontent.length; i++) {
-    tabcontent[i].style.display = "none";
-    tabcontent[i].classList.remove("active-content");
-  }
-  tablinks = document.getElementsByClassName("tab-link");
-  for (i = 0; i < tablinks.length; i++) {
-    tablinks[i].classList.remove("active");
-  }
-  document.getElementById(tabName).style.display = "block";
-  document.getElementById(tabName).classList.add("active-content");
-  evt.currentTarget.classList.add("active");
-}
-
-// Get the element with id="defaultOpen" and click on it
-// document.getElementById("defaultOpen").click(); // You might want to set a default open tab
-</script>
 {% endblock %}
