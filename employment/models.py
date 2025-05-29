@@ -26,7 +26,7 @@ class JobPosting(models.Model):
     description = models.TextField()
     location = models.CharField(max_length=255)
     hourly_rate = models.DecimalField(max_digits=10, decimal_places=2)
-    estimated_hours = models.IntegerField()
+    estimated_hours = models.IntegerField(null=False, blank=False, default=0)
     skills = models.ManyToManyField(JobSkill)
     stage = models.ManyToManyField(JobStage)
     accepting_application_date = models.DateField()

@@ -5,20 +5,257 @@
 {% block title %}{% if job_posting %}Edit Job Posting{% else %}Create Job Posting{% endif %}{% endblock %}
 
 {% block extra_css %}
-{# The inline styles have been moved to employer_application.css and will be imported via master.css #}
-{# Ensure your master.css or base template imports employer_application.css correctly #}
+<style>
+    .skill-item {
+        transition: all 0.2s ease-in-out;
+        cursor: pointer;
+    }
+    .skill-item:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    .skill-item.selected {
+        background-color: var(--secondary-color) !important;
+        border-color: var(--primary-color) !important;
+        color: white !important;
+    }
+    .skill-item.selected .skill-name {
+        color: white !important;
+    }
+    .skill-item input[type="checkbox"] {
+        display: none;
+    }
+</style>
 {% endblock %}
 
-{% block extra_js %}
+{% block content %}
+<div class="min-h-screen bg-[var(--quinary-color)] py-8">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Progress Bar -->
+        <div class="mb-8">
+            <nav aria-label="Progress">
+                <ol class="flex items-center justify-between">
+                    <li class="relative flex-1">
+                        <div class="relative flex h-8 w-8 items-center justify-center rounded-full bg-[var(--secondary-color)]">
+                            <span class="text-sm font-medium text-white">1</span>
+                        </div>
+                        <span class="mt-2 block text-sm font-medium text-[var(--secondary-color)] text-center">Create</span>
+                    </li>
+                    <li class="relative flex-1">
+                        <div class="relative flex h-8 w-8 items-center justify-center rounded-full border-2 border-[var(--quaternary-color)] bg-white mx-auto">
+                            <span class="text-sm font-medium text-[var(--tertiary-color)]">2</span>
+                        </div>
+                        <span class="mt-2 block text-sm font-medium text-[var(--tertiary-color)] text-center">Review</span>
+                    </li>
+                    <li class="relative flex-1">
+                        <div class="relative flex h-8 w-8 items-center justify-center rounded-full border-2 border-[var(--quaternary-color)] bg-white ml-auto">
+                            <span class="text-sm font-medium text-[var(--tertiary-color)]">3</span>
+                        </div>
+                        <span class="mt-2 block text-sm font-medium text-[var(--tertiary-color)] text-center">Publish</span>
+                    </li>
+                </ol>
+            </nav>
+        </div>
+
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-[var(--primary-color)]">
+                {% if job_posting %}Update Job Details{% else %}Create New Job Posting{% endif %}
+            </h1>
+            <p class="text-[var(--tertiary-color)] mt-3 text-lg md:text-xl">
+                {% if job_posting %}Refine the details for this opportunity.{% else %}Let's get your new opportunity posted! Fill in the details below.{% endif %}
+            </p>
+        </div>
+
+        <!-- Form -->
+        <form method="post" action="{% if job_posting %}{% url 'employment:employer_application_edit' job_id=job_posting.id %}{% else %}{% url 'employment:employer_application_create' %}{% endif %}" class="space-y-8">
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+                <div class="bg-[var(--color-red-100)] border-l-4 border-[var(--color-red-500)] text-[var(--color-red-700)] p-4 rounded-md" role="alert">
+                    <p class="font-bold">Please correct the following errors:</p>
+                    {% for error in form.non_field_errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!-- General Information -->
+            <div class="bg-white rounded-xl shadow-lg border border-[var(--quaternary-color)] overflow-hidden">
+                <div class="px-6 py-4 border-b border-[var(--quaternary-color)] bg-gradient-to-r from-[var(--quaternary-color)] to-white">
+                    <h2 class="text-2xl font-semibold text-[var(--primary-color)] flex items-center">
+                        <svg class="w-6 h-6 mr-3 text-[var(--secondary-color)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        General Information
+                    </h2>
+                    <p class="text-[var(--tertiary-color)] mt-1">The core details about the position</p>
+                </div>
+                <div class="p-6 space-y-6">
+                    <div>
+                        <label for="{{ form.title.id_for_label }}" class="block text-sm font-semibold text-[var(--primary-color)] mb-2">
+                            Job Title *
+                        </label>
+                        {% render_field form.title class="w-full px-4 py-3 border border-[var(--quaternary-color)] rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--secondary-color)] focus:border-[var(--secondary-color)] bg-white" placeholder="e.g. Senior Software Engineer" %}
+                        {% if form.title.errors %}
+                            <div class="text-[var(--color-red-600)] text-sm mt-1">{{ form.title.errors|striptags }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <label for="{{ form.description.id_for_label }}" class="block text-sm font-semibold text-[var(--primary-color)] mb-2">
+                            Job Description *
+                        </label>
+                        {% render_field form.description class="w-full px-4 py-3 border border-[var(--quaternary-color)] rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--secondary-color)] focus:border-[var(--secondary-color)] bg-white" rows="6" placeholder="Describe the role, responsibilities, team, and company culture..." %}
+                        {% if form.description.errors %}
+                            <div class="text-[var(--color-red-600)] text-sm mt-1">{{ form.description.errors|striptags }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <label for="{{ form.location.id_for_label }}" class="block text-sm font-semibold text-[var(--primary-color)] mb-2">
+                            Location *
+                        </label>
+                        {% render_field form.location class="w-full px-4 py-3 border border-[var(--quaternary-color)] rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--secondary-color)] focus:border-[var(--secondary-color)] bg-white" placeholder="e.g. London, UK or Remote" %}
+                        {% if form.location.errors %}
+                            <div class="text-[var(--color-red-600)] text-sm mt-1">{{ form.location.errors|striptags }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Skills Section -->
+                    <div>
+                        <label class="block text-sm font-semibold text-[var(--primary-color)] mb-2">
+                            Required Skills
+                        </label>
+                        <p class="text-sm text-[var(--tertiary-color)] mb-4">Select all skills that are important for this role</p>
+                        
+                        {% if form.skills.field.queryset %}
+                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                                {% for skill_choice in form.skills %}
+                                    <div class="skill-item flex items-center justify-center p-4 border-2 border-[var(--quaternary-color)] rounded-lg bg-white hover:border-[var(--tertiary-color)] transition-all duration-200 min-h-[80px]">
+                                        {{ skill_choice.tag }}
+                                        <span class="skill-name text-sm font-medium text-[var(--secondary-color)] text-center">{{ skill_choice.choice_label }}</span>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="text-center py-8 bg-[var(--quaternary-color)] rounded-lg border border-dashed border-[var(--tertiary-color)]">
+                                <svg class="mx-auto h-12 w-12 text-[var(--tertiary-color)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                                </svg>
+                                <h3 class="mt-2 text-sm font-medium text-[var(--secondary-color)]">No skills available</h3>
+                                <p class="mt-1 text-sm text-[var(--tertiary-color)]">Contact an administrator to add skills to the system.</p>
+                            </div>
+                        {% endif %}
+                        
+                        {% if form.skills.errors %}
+                            <div class="text-[var(--color-red-600)] text-sm mt-1">{{ form.skills.errors|striptags }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Compensation -->
+            <div class="bg-white rounded-xl shadow-lg border border-[var(--quaternary-color)] overflow-hidden">
+                <div class="px-6 py-4 border-b border-[var(--quaternary-color)] bg-gradient-to-r from-[var(--quaternary-color)] to-white">
+                    <h2 class="text-2xl font-semibold text-[var(--primary-color)] flex items-center">
+                        <svg class="w-6 h-6 mr-3 text-[var(--secondary-color)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/>
+                        </svg>
+                        Compensation
+                    </h2>
+                    <p class="text-[var(--tertiary-color)] mt-1">Payment and time commitment details</p>
+                </div>
+                <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="{{ form.hourly_rate.id_for_label }}" class="block text-sm font-semibold text-[var(--primary-color)] mb-2">
+                            Hourly Rate (£) *
+                        </label>
+                        {% render_field form.hourly_rate class="w-full px-4 py-3 border border-[var(--quaternary-color)] rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--secondary-color)] focus:border-[var(--secondary-color)] bg-white" placeholder="e.g. 25.00" %}
+                        {% if form.hourly_rate.errors %}
+                            <div class="text-[var(--color-red-600)] text-sm mt-1">{{ form.hourly_rate.errors|striptags }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <label for="{{ form.estimated_hours.id_for_label }}" class="block text-sm font-semibold text-[var(--primary-color)] mb-2">
+                            Hours per Week *
+                        </label>
+                        {% render_field form.estimated_hours class="w-full px-4 py-3 border border-[var(--quaternary-color)] rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--secondary-color)] focus:border-[var(--secondary-color)] bg-white" placeholder="e.g. 40" %}
+                        {% if form.estimated_hours.errors %}
+                            <div class="text-[var(--color-red-600)] text-sm mt-1">{{ form.estimated_hours.errors|striptags }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Process -->
+            <div class="bg-white rounded-xl shadow-lg border border-[var(--quaternary-color)] overflow-hidden">
+                <div class="px-6 py-4 border-b border-[var(--quaternary-color)] bg-gradient-to-r from-[var(--quaternary-color)] to-white">
+                    <h2 class="text-2xl font-semibold text-[var(--primary-color)] flex items-center">
+                        <svg class="w-6 h-6 mr-3 text-[var(--secondary-color)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                        </svg>
+                        Application Process
+                    </h2>
+                    <p class="text-[var(--tertiary-color)] mt-1">Timeline and application deadline</p>
+                </div>
+                <div class="p-6 space-y-6">
+                    <div class="max-w-xs">
+                        <label for="{{ form.accepting_application_date.id_for_label }}" class="block text-sm font-semibold text-[var(--primary-color)] mb-2">
+                            Application Deadline *
+                        </label>
+                        {% render_field form.accepting_application_date class="w-full px-4 py-3 border border-[var(--quaternary-color)] rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--secondary-color)] focus:border-[var(--secondary-color)] bg-white" %}
+                        {% if form.accepting_application_date.errors %}
+                            <div class="text-[var(--color-red-600)] text-sm mt-1">{{ form.accepting_application_date.errors|striptags }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Information -->
+            <div class="bg-white rounded-xl shadow-lg border border-[var(--quaternary-color)] overflow-hidden">
+                <div class="px-6 py-4 border-b border-[var(--quaternary-color)] bg-gradient-to-r from-[var(--quaternary-color)] to-white">
+                    <h2 class="text-2xl font-semibold text-[var(--primary-color)] flex items-center">
+                        <svg class="w-6 h-6 mr-3 text-[var(--secondary-color)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        Additional Information
+                    </h2>
+                    <p class="text-[var(--tertiary-color)] mt-1">Optional details about the role</p>
+                </div>
+                <div class="p-6">
+                    <div>
+                        <label for="{{ form.additional_info.id_for_label }}" class="block text-sm font-semibold text-[var(--primary-color)] mb-2">
+                            Additional Details
+                        </label>
+                        {% render_field form.additional_info class="w-full px-4 py-3 border border-[var(--quaternary-color)] rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--secondary-color)] focus:border-[var(--secondary-color)] bg-white" rows="4" placeholder="e.g. Benefits, company culture, specific requirements..." %}
+                        {% if form.additional_info.errors %}
+                            <div class="text-[var(--color-red-600)] text-sm mt-1">{{ form.additional_info.errors|striptags }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="flex justify-center pt-6">
+                <button type="submit" class="inline-flex items-center justify-center px-8 py-4 border border-transparent rounded-lg shadow-lg text-lg font-semibold text-white bg-[var(--primary-color)] hover:bg-[var(--secondary-color)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary-color)] transform hover:scale-105 transition-all duration-200">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    {% if job_posting %}Update Draft{% else %}Progress to Review{% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const skillsGrid = document.querySelector('.skills-grid'); 
-    const stagesList = document.querySelector('.stages-list');
-    const addStageBtn = document.getElementById('add-stage-btn');
-    const stageTemplate = document.getElementById('stage-template');
-    let stageCounter = 0;
+    const skillsGrid = document.querySelector('.grid'); 
 
-    // Update existing skill items (from form.skills) with click listeners for styling and checkbox toggling
+    // Handle skill selection
     if (skillsGrid) {
         skillsGrid.querySelectorAll('.skill-item').forEach(item => {
             const checkbox = item.querySelector('input[type="checkbox"]');
@@ -26,250 +263,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 item.classList.toggle('selected', checkbox.checked);
                 item.addEventListener('click', function(event) {
                     if (event.target !== checkbox && !checkbox.contains(event.target)) {
-                        let parentLabel = event.target.closest('label');
-                        if (!parentLabel || parentLabel.htmlFor !== checkbox.id) {
-                            checkbox.checked = !checkbox.checked;
-                        }
+                        checkbox.checked = !checkbox.checked;
                     }
                     item.classList.toggle('selected', checkbox.checked);
                 });
             }
         });
     }
-
-    // Function to add a new application stage
-    function addStage(stageName = '') {
-        if (!stageTemplate) return;
-        const newStageFragment = stageTemplate.content.cloneNode(true);
-        stageCounter++;
-        
-        newStageFragment.querySelector('.stage-title-display').textContent = 'Stage ' + stageCounter;
-        
-        const stageInput = newStageFragment.querySelector('input[type="text"]');
-        stageInput.value = stageName;
-        stageInput.name = `application_stages-${stageCounter-1}-name`; // Ensure unique names if needed by backend for dynamic forms
-        stageInput.id = `id_application_stages-${stageCounter-1}-name`;
-        stageInput.placeholder = 'Enter name for Stage ' + stageCounter;
-
-        newStageFragment.querySelector('.remove-stage-btn').addEventListener('click', function(e) {
-            e.preventDefault();
-            this.closest('.stage-item').remove();
-            stageCounter = 0; // Reset and recount for proper renumbering
-            stagesList.querySelectorAll('.stage-item').forEach((item) => {
-                stageCounter++;
-                item.querySelector('.stage-title-display').textContent = 'Stage ' + stageCounter;
-                const input = item.querySelector('input[type="text"]');
-                input.placeholder = 'Enter name for Stage ' + stageCounter;
-                // Update name and id if backend expects sequential indexing
-                input.name = `application_stages-${stageCounter-1}-name`; 
-                input.id = `id_application_stages-${stageCounter-1}-name`;
-            });
-        });
-        stagesList.appendChild(newStageFragment);
-    }
-
-    // Initialize stages
-    if (stagesList && stageTemplate) {
-        const existingStagesDataEl = document.getElementById('existing-stages-data');
-        if (existingStagesDataEl) {
-            try {
-                const existingStagesData = JSON.parse(existingStagesDataEl.textContent || '[]');
-                if (Array.isArray(existingStagesData) && existingStagesData.length > 0) {
-                    existingStagesData.forEach(stageName => addStage(stageName));
-                }
-            } catch (e) {
-                console.error("Error parsing existing stages data:", e);
-            }
-        }
-        if (stagesList.children.length === 0 && !document.querySelector('.stage-item')) { 
-            addStage();
-        }
-        if (addStageBtn) {
-            addStageBtn.addEventListener('click', (e) => {
-                e.preventDefault(); 
-                addStage();
-            });
-        }
-    }
 });
 </script>
-{% endblock %}
-
-{% block content %}
-<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="text-center mb-12">
-        <h1 class="text-4xl md:text-5xl font-bold text-[var(--secondary-color)]">{% if job_posting %}Update Job Details{% else %}Launch a New Opportunity{% endif %}</h1>
-        <p class="text-[var(--tertiary-color)] mt-3 text-lg md:text-xl">{% if job_posting %}Refine the specifics for this role.{% else %}Let's get your new job posted! Fill in the details below.{% endif %}</p>
-    </div>
-
-    <form method="post" action="{% if job_posting %}{% url 'employment:employer_application_edit' job_id=job_posting.id %}{% else %}{% url 'employment:employer_application_create' %}{% endif %}" class="space-y-8">
-        {% csrf_token %}
-        
-        {% if form.non_field_errors %}
-            <div class="bg-[var(--color-red-100)] border-l-4 border-[var(--color-red-500)] text-[var(--color-red-700)] p-4 mb-8 rounded-md" role="alert">
-                <p class="font-bold">Hold on a second!</p>
-                {% for error in form.non_field_errors %}
-                    <p>{{ error }}</p>
-                {% endfor %}
-            </div>
-        {% endif %}
-
-        <!-- Basic Information -->
-        <div class="form-section p-6 md:p-8 border border-gray-300 bg-white rounded-xl shadow-lg hover:border-blue-500 transition-all duration-300 mb-8">
-            <h2 class="text-2xl md:text-3xl font-semibold text-blue-800 mb-4 flex items-center">
-                <svg class="w-6 h-6 mr-3 fill-current text-blue-800" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 3H5c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2h14c1.103 0 2-.897 2-2V5c0-1.103-.897-2-2-2zM5 19V5h14l.002 14H5z"/><path d="M7 7h10v2H7zm0 4h10v2H7zm0 4h7v2H7z"/></svg>
-                Job Essentials
-            </h2>
-            <p class="text-sm md:text-base text-gray-600 mb-8">The core details about the position.</p>
-            <div class="space-y-6">
-                <div>
-                    <label for="{{ form.title.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1 required-label">{{ form.title.label }}</label>
-                    {% render_field form.title class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-50" placeholder="e.g. Senior Software Engineer" %}
-                    {% if form.title.errors %}<div class="text-red-600 text-xs mt-1 pl-1">{{ form.title.errors|striptags }}</div>{% endif %}
-                </div>
-                <div>
-                    <label for="{{ form.description.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1 required-label">{{ form.description.label }}</label>
-                    {% render_field form.description class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-50" rows="5" placeholder="Describe the role, responsibilities, team, and company culture..." %}
-                    {% if form.description.errors %}<div class="text-red-600 text-xs mt-1 pl-1">{{ form.description.errors|striptags }}</div>{% endif %}
-                </div>
-                <div>
-                    <label for="{{ form.location.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1 required-label">{{ form.location.label }}</label>
-                    {% render_field form.location class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-50" placeholder="e.g. San Francisco, CA or Remote" %}
-                    {% if form.location.errors %}<div class="text-red-600 text-xs mt-1 pl-1">{{ form.location.errors|striptags }}</div>{% endif %}
-                </div>
-            </div>
-        </div>
-
-        <!-- Compensation and Hours -->
-        <div class="form-section p-6 md:p-8 border border-gray-300 bg-white rounded-xl shadow-lg hover:border-blue-500 transition-all duration-300 mb-8">
-            <h2 class="text-2xl md:text-3xl font-semibold text-blue-700 mb-4 flex items-center">
-                 <svg class="w-6 h-6 mr-3 fill-current text-blue-700" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"/><path d="M13 7h-2v5.414l3.293 3.293 1.414-1.414L13 11.586zM12.5 11.5H14V10h-1.5V8.5H11V10H9.5V11.5H11V13h1.5V11.5zM15.25 15.5a.75.75 0 0 1-.75.75h-5a.75.75 0 0 1-.75-.75V14h6.5v1.5z"/></svg>
-                Pay & Time
-            </h2>
-            <p class="text-sm md:text-base text-gray-600 mb-8">Details about salary and weekly commitment.</p>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-                <div>
-                    <label for="{{ form.hourly_rate.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1 required-label">{{ form.hourly_rate.label }}</label>
-                    {% render_field form.hourly_rate class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-50" placeholder="e.g. 25.50" %}
-                    {% if form.hourly_rate.errors %}<div class="text-red-600 text-xs mt-1 pl-1">{{ form.hourly_rate.errors|striptags }}</div>{% endif %}
-                </div>
-                <div>
-                    <label for="{{ form.estimated_hours.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1 required-label">{{ form.estimated_hours.label }} (per week)</label>
-                    {% render_field form.estimated_hours class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-50" placeholder="e.g. 40" %}
-                    {% if form.estimated_hours.errors %}<div class="text-red-600 text-xs mt-1 pl-1">{{ form.estimated_hours.errors|striptags }}</div>{% endif %}
-                </div>
-            </div>                         
-        </div>
-
-        <!-- Required Skills -->
-        <div class="form-section p-6 md:p-8 border border-gray-300 bg-white rounded-xl shadow-lg hover:border-blue-500 transition-all duration-300 mb-8">
-            <h2 class="text-2xl md:text-3xl font-semibold text-blue-800 mb-4 flex items-center">
-                <svg class="w-6 h-6 mr-3 fill-current text-blue-800" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 6.883l2.149 4.352L19 12l-4.851.765L12 17.117l-2.149-4.352L5 12l4.851-.765z"/><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 17.5a7.5 7.5 0 110-15 7.5 7.5 0 010 15zM12 8.472l-1.343 2.72-3.015.476 2.182 2.126-.515 2.991L12 15.035l2.691 1.75.515-2.991-2.182-2.126 3.015-.476L12 8.472z"/></svg>
-                Key Skills & Qualifications
-            </h2>
-            <p class="text-sm md:text-base text-gray-600 mb-8">Select from the list of predefined skills crucial for this role.</p>
-            
-            <div class="skills-grid grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-8">
-                {% for skill_choice in form.skills %}
-                <div class="skill-item flex items-center p-3 border border-[var(--tertiary-color)] rounded-lg bg-gray-50 hover:bg-[var(--quaternary-color)] hover:border-[var(--primary-color)]">
-                    {{ skill_choice.tag }} 
-                    <div class="skill-icon mr-2">
-                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="w-5 h-5"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" /></svg>
-                    </div>
-                    <span class="skill-name text-sm font-medium text-[var(--secondary-color)]">{{ skill_choice.choice_label }}</span>
-                </div>
-                {% endfor %}
-                 {% if not form.skills.field.queryset and not job_posting.skills.all %} 
-                    <div class="skills-empty-state col-span-full text-center text-[var(--tertiary-color)] py-6 bg-[var(--quaternary-color)] rounded-lg border border-dashed border-[var(--tertiary-color)]">
-                        <svg class="mx-auto h-12 w-12 text-[var(--tertiary-color)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" /></svg>
-                        <h3 class="mt-2 text-sm font-medium text-[var(--secondary-color)]">No predefined skills available</h3>
-                        <p class="mt-1 text-sm text-[var(--tertiary-color)]">Contact an administrator to add more skills if needed.</p>
-                    </div>
-                {% endif %}
-            </div>
-            {% comment %}
-            <div class="flex items-center gap-3 mt-4 pt-4 border-t border-gray-200">
-                <input type="text" id="new-skill-input" placeholder="Add a custom skill (e.g., Python)" class="flex-grow px-4 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 sm:text-sm">
-                <button type="button" id="add-skill-btn" class="inline-flex items-center justify-center px-5 py-2.5 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors">
-                    <svg class="w-5 h-5 mr-2 -ml-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" /></svg>
-                    Add Skill
-                </button>
-            </div>
-            {% endcomment %}
-             {% if form.skills.errors %}<div class="text-[var(--color-red-600)] text-xs mt-1 pl-1">{{ form.skills.errors|striptags }}</div>{% endif %}
-        </div>
-
-        <!-- Application Stages -->
-        <div class="form-section p-6 md:p-8 border border-gray-300 bg-white rounded-xl shadow-lg hover:border-blue-500 transition-all duration-300 mb-8">
-            <h2 class="text-2xl md:text-3xl font-semibold text-blue-700 mb-4 flex items-center">
-                <svg class="w-6 h-6 mr-3 fill-current text-blue-700" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 18.624V21h-2v-2.404A7.966 7.966 0 0 1 5.228 15H2V9h3.228A7.968 7.968 0 0 1 11 5.404V3h2v2.376A7.968 7.968 0 0 1 18.772 9H22v6h-3.228A7.966 7.966 0 0 1 13 18.624zM7 13.5a4.5 4.5 0 1 0 0-3 4.5 4.5 0 0 0 0 3zm10 0a4.5 4.5 0 1 0 0-3 4.5 4.5 0 0 0 0 3z"/></svg>
-                Hiring Process
-            </h2>
-            <p class="text-sm md:text-base text-gray-600 mb-8">Define the application stages and deadline.</p>
-            
-            <div class="mb-6">
-                <label for="{{ form.accepting_application_date.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1 required-label">{{ form.accepting_application_date.label }}</label>
-                <div class="max-w-xs">
-                    {% render_field form.accepting_application_date type="date" class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-50" %}
-                </div>
-                {% if form.accepting_application_date.errors %}<div class="text-red-600 text-xs mt-1 pl-1">{{ form.accepting_application_date.errors|striptags }}</div>{% endif %}
-            </div>
-            
-            <h3 class="text-lg font-medium text-gray-700 mb-3 mt-8">Application Stages:</h3>
-            {% if job_posting %}
-            {{ existing_stage_names|json_script:"existing-stages-data" }}
-            {% else %}
-            <script id="existing-stages-data" type="application/json">[]</script>
-            {% endif %}
-
-            <div class="stages-list space-y-4 mb-6">
-                {# Dynamically added stages will appear here #}
-            </div>
-            <button type="button" id="add-stage-btn" class="w-full flex items-center justify-center px-4 py-3 border-2 border-dashed border-gray-400 rounded-lg text-sm font-medium text-gray-600 hover:text-blue-600 hover:border-blue-500 hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-150 ease-in-out">
-                <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-11.25a.75.75 0 00-1.5 0v2.5h-2.5a.75.75 0 000 1.5h2.5v2.5a.75.75 0 001.5 0v-2.5h2.5a.75.75 0 000-1.5h-2.5v-2.5z" clip-rule="evenodd" /></svg>
-                Add Another Stage
-            </button>
-             {% if form.application_stages.errors %}<div class="text-red-600 text-xs mt-1 pl-1">{{ form.application_stages.errors|striptags }}</div>{% endif %}
-        </div>
-
-        <!-- Additional Information -->
-        <div class="form-section p-6 md:p-8 border border-gray-300 bg-white rounded-xl shadow-lg hover:border-blue-500 transition-all duration-300 mb-8">
-            <h2 class="text-2xl md:text-3xl font-semibold text-blue-600 mb-4 flex items-center">
-               <svg class="w-6 h-6 mr-3 fill-current text-blue-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"/><path d="M11 11h2v6h-2zm0-4h2v2h-2z"/></svg>
-                Extra Details (Optional)
-            </h2>
-            <p class="text-sm md:text-base text-gray-600 mb-8">Any other relevant information for applicants.</p>
-            <div>
-                <label for="{{ form.additional_info.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{ form.additional_info.label }}</label>
-                {% render_field form.additional_info class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-50" rows="4" placeholder="e.g. Specific project details, team size, benefits, company perks..." %}
-                {% if form.additional_info.errors %}<div class="text-red-600 text-xs mt-1 pl-1">{{ form.additional_info.errors|striptags }}</div>{% endif %}
-            </div>
-        </div>
-
-        <div class="pt-8 flex justify-center">
-            <button type="submit" class="inline-flex items-center justify-center py-3 px-8 border border-transparent rounded-lg shadow-md text-base font-medium text-white bg-[var(--primary-color)] hover:bg-[var(--secondary-color)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary-color)] transform hover:scale-105 transition-all duration-150 ease-in-out">
-                <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" /></svg>
-                {% if job_posting %}Update Job & Review{% else %}Create Job & Review{% endif %}
-            </button>
-        </div>
-    </form>
-</div>
-
-<!-- Template for adding new stages -->
-<template id="stage-template">
-    <div class="stage-item bg-[var(--quaternary-color)] p-4 border border-[var(--tertiary-color)]/50 rounded-lg shadow-sm mb-3">
-        <div class="flex items-center justify-between mb-3">
-            <h3 class="text-md font-semibold text-[var(--secondary-color)] flex items-center">
-                <svg class="w-5 h-5 mr-2 text-[var(--secondary-color)]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M3 3a1 1 0 000 2h14a1 1 0 100-2H3zM3 7a1 1 0 000 2h14a1 1 0 100-2H3zM3 11a1 1 0 100 2h14a1 1 0 100-2H3zM3 15a1 1 0 100 2h14a1 1 0 100-2H3z" /></svg>
-                <span class="stage-title-display">New Stage</span>
-            </h3>
-            <button type="button" class="remove-stage-btn text-[var(--tertiary-color)] hover:text-[var(--color-red-500)] transition-colors duration-150 p-1 rounded-full hover:bg-[var(--color-red-100)]">
-                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" /></svg>
-            </button>
-        </div>
-        <div>
-            <input type="text" name="application_stages" class="w-full px-3 py-2.5 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-[var(--primary-color)] focus:border-[var(--primary-color)] sm:text-sm bg-white" placeholder="Enter stage name (e.g., Initial Screening)" required>
-        </div>
-    </div>
-</template>
 {% endblock %}

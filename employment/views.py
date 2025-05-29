@@ -123,38 +123,30 @@ def employer_application_create(request):
         form = JobPostingForm(request.POST)
         if form.is_valid():
             job_posting = form.save(commit=False)
-            job_posting.employer = request.user.employerprofile
+            job_posting.employer = request.user.employer_profile
             job_posting.published = False
             job_posting.save()
 
-            if 'skills' in form.cleaned_data:
+            # Handle skills - clear first, then set if any are selected
+            job_posting.skills.clear()
+            if 'skills' in form.cleaned_data and form.cleaned_data['skills']:
                 job_posting.skills.set(form.cleaned_data['skills'])
             
-            application_stage_names = request.POST.getlist('application_stages')
-            if application_stage_names:
-                job_posting.stage.clear()
-                for stage_name in application_stage_names:
-                    if stage_name.strip():
-                        stage, created = JobStage.objects.get_or_create(name=stage_name.strip())
-                        job_posting.stage.add(stage)
-            
-            messages.success(request, 'Job posting saved for review.')
+            messages.success(request, 'Job posting saved successfully! Please review before publishing.')
             return redirect('employment:employer_application_review', job_id=job_posting.id)
         else:
             messages.error(request, "Please correct the errors below.")
     else:
         form = JobPostingForm()
-        existing_stage_names = []
     
     context = {
         'form': form,
-        'existing_stage_names': existing_stage_names,
     }
     return render(request, 'employment/employer/application/employer_application_creation.html', context)
 
 @login_required
 def employer_application_review(request, job_id):
-    job_posting = get_object_or_404(JobPosting, id=job_id, employer=request.user.employerprofile)
+    job_posting = get_object_or_404(JobPosting, id=job_id, employer=request.user.employer_profile)
     
     context = {
         'job_posting': job_posting,
@@ -163,8 +155,7 @@ def employer_application_review(request, job_id):
 
 @login_required
 def employer_application_edit(request, job_id):
-    job_posting = get_object_or_404(JobPosting, id=job_id, employer=request.user.employerprofile)
-    existing_stage_names = [stage.name for stage in job_posting.stage.all()]
+    job_posting = get_object_or_404(JobPosting, id=job_id, employer=request.user.employer_profile)
     
     if request.method == 'POST':
         form = JobPostingForm(request.POST, instance=job_posting)
@@ -173,20 +164,12 @@ def employer_application_edit(request, job_id):
             edited_posting.published = False
             edited_posting.save()
 
-            if 'skills' in form.cleaned_data:
+            # Handle skills - clear first, then set if any are selected
+            edited_posting.skills.clear()
+            if 'skills' in form.cleaned_data and form.cleaned_data['skills']:
                 edited_posting.skills.set(form.cleaned_data['skills'])
-            else:
-                edited_posting.skills.clear()
             
-            application_stage_names = request.POST.getlist('application_stages')
-            edited_posting.stage.clear()
-            if application_stage_names:
-                for stage_name in application_stage_names:
-                    if stage_name.strip():
-                        stage, created = JobStage.objects.get_or_create(name=stage_name.strip())
-                        edited_posting.stage.add(stage)
-
-            messages.success(request, 'Job posting updated and saved for review.')
+            messages.success(request, 'Job posting updated successfully! Please review before publishing.')
             return redirect('employment:employer_application_review', job_id=job_posting.id)
         else:
             messages.error(request, "Please correct the errors below.")
@@ -196,13 +179,12 @@ def employer_application_edit(request, job_id):
     context = {
         'form': form,
         'job_posting': job_posting, 
-        'existing_stage_names': existing_stage_names,
     }
     return render(request, 'employment/employer/application/employer_application_creation.html', context)
 
 @login_required
 def employer_application_submit(request, job_id):
-    job_posting = get_object_or_404(JobPosting, id=job_id, employer=request.user.employerprofile)
+    job_posting = get_object_or_404(JobPosting, id=job_id, employer=request.user.employer_profile)
     
     if request.method == 'POST':
         job_posting.published = True
@@ -210,4 +192,17 @@ def employer_application_submit(request, job_id):
         messages.success(request, 'Job posting published successfully!')
         return redirect('employment:employer_dashboard')
     
+    return redirect('employment:employer_application_review', job_id=job_posting.id)
+
+@login_required
+def employer_application_delete(request, job_id):
+    job_posting = get_object_or_404(JobPosting, id=job_id, employer=request.user.employer_profile)
+    
+    if request.method == 'POST':
+        job_title = job_posting.title
+        job_posting.delete()
+        messages.success(request, f'Job posting "{job_title}" has been deleted successfully.')
+        return redirect('employment:employer_dashboard')
+    
+    # If not POST, redirect back to review page
     return redirect('employment:employer_application_review', job_id=job_posting.id)

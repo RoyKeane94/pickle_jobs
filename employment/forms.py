@@ -9,12 +9,6 @@ class JobPostingForm(forms.ModelForm):
         required=False
     )
     
-    # stage = forms.ModelMultipleChoiceField(
-    #     queryset=JobStage.objects.all(),
-    #     widget=forms.CheckboxSelectMultiple,
-    #     required=False
-    # )
-    
     accepting_application_date = forms.DateField(
         widget=DateInput(attrs={'type': 'date'})
     )
@@ -22,14 +16,17 @@ class JobPostingForm(forms.ModelForm):
     class Meta:
         model = JobPosting
         fields = [
+            # General
             'title', 
             'description', 
             'location', 
+            'skills', 
+            # Process
+            'accepting_application_date',
+            # Compensation
             'hourly_rate', 
             'estimated_hours',
-            'skills', 
-            # 'stage', 
-            'accepting_application_date',
+            # Additional
             'additional_info'
         ]
         exclude = ['employer', 'published']
