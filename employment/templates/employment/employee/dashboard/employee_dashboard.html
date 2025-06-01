@@ -1,0 +1,463 @@
+{% extends 'core/layout/layout.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Employee Dashboard{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-[var(--quinary-color)] py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-[var(--primary-color)]">
+                Welcome back{% if user.first_name %}, {{ user.first_name }}{% endif %}
+            </h1>
+            <p class="text-[var(--tertiary-color)] mt-3 text-lg md:text-xl">
+                Find your next opportunity and manage your applications
+            </p>
+        </div>
+
+        <!-- CV Completion Banner -->
+        {% if cv_completed %}
+        <div class="bg-gradient-to-r from-green-50 to-green-100 border-l-4 border-green-400 p-6 mb-8 rounded-r-lg">
+            <div class="flex items-center justify-between">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <svg class="h-6 w-6 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="text-lg font-medium text-green-800">PickleCV Complete!</h3>
+                        <div class="mt-2 text-sm text-green-700">
+                            <p>Well done, you have a CV ready to go. Your profile is complete and optimized for employers.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex space-x-3">
+                    <a href="{% url 'employment:employee_cv_update' %}" 
+                       class="inline-flex items-center px-4 py-2 border border-green-600 text-sm font-medium rounded-md text-green-600 hover:bg-green-50 transition-all duration-200">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                        </svg>
+                        Click here to make updates
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="bg-gradient-to-r from-blue-50 to-blue-100 border-l-4 border-blue-400 p-6 mb-8 rounded-r-lg">
+            <div class="flex items-center justify-between">
+                <div class="flex-1">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <svg class="h-6 w-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <h3 class="text-lg font-medium text-blue-800">Complete Your PickleCV</h3>
+                            <div class="mt-2 text-sm text-blue-700">
+                                <p>Follow these steps to create your professional profile and attract the best opportunities.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Progress Steps -->
+                    <div class="mt-6 ml-9">
+                        <div class="space-y-3">
+                            <!-- Step 1: Start CV -->
+                            <div class="flex items-center">
+                                {% if cv_progress.cv_started %}
+                                    <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                    </svg>
+                                {% else %}
+                                    <div class="w-5 h-5 border-2 border-blue-400 rounded-full mr-3 flex items-center justify-center">
+                                        <div class="w-2 h-2 bg-blue-400 rounded-full"></div>
+                                    </div>
+                                {% endif %}
+                                <span class="text-sm font-medium text-blue-800">1. Start your CV</span>
+                            </div>
+                            
+                            <!-- Step 2: Experience -->
+                            <div class="flex items-center">
+                                {% if cv_progress.experience_completed %}
+                                    <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                    </svg>
+                                {% else %}
+                                    <div class="w-5 h-5 border-2 border-gray-300 rounded-full mr-3"></div>
+                                {% endif %}
+                                <span class="text-sm font-medium {% if cv_progress.experience_completed %}text-green-700{% else %}text-gray-600{% endif %}">2. Experience added</span>
+                            </div>
+                            
+                            <!-- Step 3: Education -->
+                            <div class="flex items-center">
+                                {% if cv_progress.education_completed %}
+                                    <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                    </svg>
+                                {% else %}
+                                    <div class="w-5 h-5 border-2 border-gray-300 rounded-full mr-3"></div>
+                                {% endif %}
+                                <span class="text-sm font-medium {% if cv_progress.education_completed %}text-green-700{% else %}text-gray-600{% endif %}">3. Education added</span>
+                            </div>
+                            
+                            <!-- Step 4: Skills & Interests -->
+                            <div class="flex items-center">
+                                {% if cv_progress.skills_interests_completed %}
+                                    <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                    </svg>
+                                {% else %}
+                                    <div class="w-5 h-5 border-2 border-gray-300 rounded-full mr-3"></div>
+                                {% endif %}
+                                <span class="text-sm font-medium {% if cv_progress.skills_interests_completed %}text-green-700{% else %}text-gray-600{% endif %}">4. Skills & interests added</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex space-x-3 ml-6">
+                    {% if cv_blank %}
+                    <a href="{% url 'employment:employee_cv_create_employment' %}" 
+                       class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-all duration-200">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                        </svg>
+                        Start Your CV
+                    </a>
+                    {% else %}
+                    <a href="{% url 'employment:employee_cv_update' %}" 
+                       class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-all duration-200">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                        </svg>
+                        Continue CV
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Key Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- Applications Sent -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600 mb-1">Applications Sent</p>
+                        <p class="text-3xl font-bold text-gray-900">{{ stats.total_applications|default:0 }}</p>
+                    </div>
+                    <div class="p-3 rounded-full bg-blue-100">
+                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pending Reviews -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600 mb-1">Under Review</p>
+                        <p class="text-3xl font-bold text-gray-900">{{ stats.pending_applications|default:0 }}</p>
+                    </div>
+                    <div class="p-3 rounded-full bg-yellow-100">
+                        <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interviews Scheduled -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600 mb-1">Interviews</p>
+                        <p class="text-3xl font-bold text-gray-900">{{ stats.interviews|default:0 }}</p>
+                    </div>
+                    <div class="p-3 rounded-full bg-green-100">
+                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 8v-6a2 2 0 012-2h4a2 2 0 012 2v6M3 21h18"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Available Jobs -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600 mb-1">Available Jobs</p>
+                        <p class="text-3xl font-bold text-gray-900">{{ stats.available_jobs|default:0 }}</p>
+                    </div>
+                    <div class="p-3 rounded-full bg-purple-100">
+                        <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0V9a2 2 0 11-4 0V6m4 0H8m8 0h2.5a2.5 2.5 0 010 5H16"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Main Content Area -->
+            <div class="lg:col-span-2 space-y-8">
+                
+                <!-- Latest Jobs -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div class="p-2 rounded-full bg-purple-100 mr-3">
+                                    <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0V9a2 2 0 11-4 0V6m4 0H8m8 0h2.5a2.5 2.5 0 010 5H16"/>
+                                    </svg>
+                                </div>
+                                <h2 class="text-xl font-semibold text-gray-900">Latest Job Opportunities</h2>
+                            </div>
+                            <a href="{% url 'employment:employee_jobs_overview' %}" 
+                               class="text-[var(--primary-color)] hover:text-[var(--secondary-color)] text-sm font-medium transition-colors">
+                                View All Jobs →
+                            </a>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        {% if latest_jobs %}
+                            <div class="space-y-6">
+                                {% for job in latest_jobs %}
+                                    <div class="border-b border-gray-100 pb-6 last:border-b-0 last:pb-0">
+                                        <div class="flex items-start justify-between">
+                                            <div class="flex-1">
+                                                <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ job.title }}</h3>
+                                                <p class="text-gray-600 mb-2">{{ job.employer.company.name }}</p>
+                                                <div class="flex items-center text-sm text-gray-600 mb-3">
+                                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                                    </svg>
+                                                    {{ job.location }}
+                                                </div>
+                                                <div class="flex items-center space-x-6 text-sm">
+                                                    <span class="font-medium text-green-600">
+                                                        <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/>
+                                                        </svg>
+                                                        £{{ job.hourly_rate }}/hr
+                                                    </span>
+                                                    <span class="font-medium text-blue-600">
+                                                        <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                                        </svg>
+                                                        {{ job.estimated_hours }}h/week
+                                                    </span>
+                                                    <span class="text-gray-500">
+                                                        Posted {{ job.created_at|naturalday }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center space-x-3 ml-6">
+                                                {% if job.has_applied %}
+                                                    <span class="px-3 py-1 text-sm font-medium bg-green-100 text-green-700 rounded-full">
+                                                        Applied
+                                                    </span>
+                                                {% else %}
+                                                    <button class="px-4 py-2 text-sm font-medium text-white bg-[var(--primary-color)] hover:bg-[var(--secondary-color)] rounded-lg transition-all duration-200">
+                                                        Apply Now
+                                                    </button>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="text-center py-12">
+                                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0V9a2 2 0 11-4 0V6m4 0H8m8 0h2.5a2.5 2.5 0 010 5H16"/>
+                                </svg>
+                                <h3 class="mt-2 text-sm font-medium text-gray-900">No jobs available</h3>
+                                <p class="mt-1 text-sm text-gray-500">Check back later for new opportunities.</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- My Applications -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div class="p-2 rounded-full bg-blue-100 mr-3">
+                                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                    </svg>
+                                </div>
+                                <h2 class="text-xl font-semibold text-gray-900">My Applications</h2>
+                            </div>
+                            <span class="w-6 h-6 bg-blue-600 text-white text-xs font-medium rounded-full flex items-center justify-center">
+                                {{ my_applications|length }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        {% if my_applications %}
+                            <div class="space-y-6">
+                                {% for application in my_applications %}
+                                    <div class="border-b border-gray-100 pb-6 last:border-b-0 last:pb-0">
+                                        <div class="flex items-start justify-between">
+                                            <div class="flex-1">
+                                                <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ application.job_posting.title }}</h3>
+                                                <p class="text-gray-600 mb-2">{{ application.job_posting.employer.company.name }}</p>
+                                                <div class="flex items-center text-sm text-gray-600 mb-3">
+                                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 8v-6a2 2 0 012-2h4a2 2 0 012 2v6M3 21h18"/>
+                                                    </svg>
+                                                    Applied {{ application.created_at|naturalday }}
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center space-x-3 ml-6">
+                                                <span class="px-3 py-1 text-sm font-medium bg-{{ application.stage.name|lower }}-100 text-{{ application.stage.name|lower }}-700 rounded-full">
+                                                    {{ application.stage.name }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="text-center py-12">
+                                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                </svg>
+                                <h3 class="mt-2 text-sm font-medium text-gray-900">No applications yet</h3>
+                                <p class="mt-1 text-sm text-gray-500">Start applying to jobs to track your applications here.</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Sidebar -->
+            <div class="space-y-8">
+                
+                <!-- Upcoming Interviews -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div class="p-2 rounded-full bg-green-100 mr-3">
+                                    <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 8v-6a2 2 0 012-2h4a2 2 0 012 2v6M3 21h18"/>
+                                    </svg>
+                                </div>
+                                <h2 class="text-lg font-semibold text-gray-900">Upcoming Interviews</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        {% if upcoming_interviews %}
+                            <div class="space-y-4">
+                                {% for interview in upcoming_interviews %}
+                                    <div class="pb-4 border-b border-gray-100 last:border-b-0 last:pb-0">
+                                        <h4 class="text-sm font-semibold text-gray-900">
+                                            {{ interview.job_posting.title }}
+                                        </h4>
+                                        <p class="text-xs text-gray-600 mt-1">{{ interview.job_posting.employer.company.name }}</p>
+                                        <p class="text-xs text-green-600 mt-1 font-medium">{{ interview.scheduled_date|naturalday }}</p>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="text-center py-8">
+                                <svg class="mx-auto h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 8v-6a2 2 0 012-2h4a2 2 0 012 2v6M3 21h18"/>
+                                </svg>
+                                <h3 class="mt-2 text-sm font-medium text-gray-900">No interviews scheduled</h3>
+                                <p class="mt-1 text-xs text-gray-500">Interview invitations will appear here.</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Messages -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div class="p-2 rounded-full bg-gray-100 mr-3">
+                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                                    </svg>
+                                </div>
+                                <h2 class="text-lg font-semibold text-gray-900">Messages</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        {% if recent_messages %}
+                            <div class="space-y-4">
+                                {% for message in recent_messages %}
+                                    <div class="pb-4 border-b border-gray-100 last:border-b-0 last:pb-0">
+                                        <h4 class="text-sm font-semibold text-gray-900">{{ message.sender }}</h4>
+                                        <p class="text-xs text-gray-600 mt-1">{{ message.preview }}</p>
+                                        <p class="text-xs text-gray-500 mt-1">{{ message.timestamp|naturalday }}</p>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="text-center py-8">
+                                <svg class="mx-auto h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                                </svg>
+                                <h3 class="mt-2 text-sm font-medium text-gray-900">No messages</h3>
+                                <p class="mt-1 text-xs text-gray-500">Messages from employers will appear here.</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <h2 class="text-lg font-semibold text-gray-900">Quick Actions</h2>
+                    </div>
+                    <div class="p-6 space-y-3">
+                        <a href="{% url 'employment:employee_jobs_overview' %}" 
+                           class="block w-full text-center px-4 py-3 border border-[var(--secondary-color)] rounded-lg text-[var(--secondary-color)] hover:bg-[var(--secondary-color)] hover:text-white transition-all duration-200 font-medium">
+                            <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                            </svg>
+                            Browse All Jobs
+                        </a>
+                        {% if not cv_blank %}
+                        <a href="{% url 'employment:employee_cv_update' %}" 
+                           class="block w-full text-center px-4 py-3 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-700 transition-all duration-200 font-medium">
+                            <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                            </svg>
+                            Update CV
+                        </a>
+                        {% else %}
+                        <a href="{% url 'employment:employee_cv_create_employment' %}" 
+                           class="block w-full text-center px-4 py-3 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-700 transition-all duration-200 font-medium">
+                            <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                            </svg>
+                            Create CV
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

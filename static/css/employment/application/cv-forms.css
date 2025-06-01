@@ -1,0 +1,178 @@
+/**
+ * CV Forms CSS
+ * Styles for autocomplete, skill selection, and form elements
+ */
+
+/* ==================== SKILL & INTEREST SELECTION STYLES ==================== */
+
+.skill-item {
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.skill-item:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.skill-item.selected {
+    background-color: var(--secondary-color) !important;
+    border-color: var(--primary-color) !important;
+    color: white !important;
+}
+
+.skill-item.selected .skill-name {
+    color: white !important;
+}
+
+.skill-item input[type="checkbox"] {
+    display: none;
+}
+
+.interest-item {
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.interest-item:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.interest-item.selected {
+    background-color: var(--primary-color) !important;
+    border-color: var(--secondary-color) !important;
+    color: white !important;
+}
+
+.interest-item.selected .interest-name {
+    color: white !important;
+}
+
+.interest-item input[type="checkbox"] {
+    display: none;
+}
+
+/* ==================== AUTOCOMPLETE STYLES ==================== */
+
+.autocomplete-container {
+    position: relative;
+}
+
+.autocomplete-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid var(--quaternary-color);
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.autocomplete-suggestion {
+    padding: 12px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--quaternary-color);
+    transition: background-color 0.2s;
+}
+
+.autocomplete-suggestion:hover,
+.autocomplete-suggestion.selected {
+    background-color: var(--quaternary-color);
+}
+
+.autocomplete-suggestion:last-child {
+    border-bottom: none;
+}
+
+/* ==================== FORM ANIMATION ENHANCEMENTS ==================== */
+
+.experience-form,
+.education-form {
+    transition: all 0.3s ease-in-out;
+}
+
+.experience-form:hover,
+.education-form:hover {
+    border-color: var(--tertiary-color);
+}
+
+/* Remove button styling */
+.remove-experience,
+.remove-education {
+    transition: all 0.2s ease-in-out;
+}
+
+.remove-experience:hover,
+.remove-education:hover {
+    transform: scale(1.1);
+}
+
+/* Add button styling */
+#add-experience,
+#add-education {
+    transition: all 0.2s ease-in-out;
+}
+
+#add-experience:hover,
+#add-education:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* ==================== RESPONSIVE IMPROVEMENTS ==================== */
+
+@media (max-width: 768px) {
+    .autocomplete-suggestions {
+        font-size: 14px;
+    }
+    
+    .autocomplete-suggestion {
+        padding: 10px 12px;
+    }
+    
+    .skill-item,
+    .interest-item {
+        min-height: 70px;
+    }
+}
+
+/* ==================== ACCESSIBILITY IMPROVEMENTS ==================== */
+
+.autocomplete-suggestion:focus {
+    outline: 2px solid var(--secondary-color);
+    outline-offset: -2px;
+}
+
+.skill-item:focus,
+.interest-item:focus {
+    outline: 2px solid var(--secondary-color);
+    outline-offset: 2px;
+}
+
+/* ==================== LOADING STATES ==================== */
+
+.autocomplete-container.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--quaternary-color);
+    border-top: 2px solid var(--secondary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    transform: translateY(-50%);
+}
+
+@keyframes spin {
+    0% { transform: translateY(-50%) rotate(0deg); }
+    100% { transform: translateY(-50%) rotate(360deg); }
+} 

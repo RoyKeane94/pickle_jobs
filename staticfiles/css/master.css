@@ -5,14 +5,11 @@
 @import "core/home/homepage.css";
 
 /* Account styles */
-@import "accounts/login.css";
-@import "accounts/register.css";
-
-/* Employee styles */
-@import "employment/dashboard/dashboard.css";
+@import "accounts/accounts.css";
 
 /* Employer application styles */
 @import "employment/application/employer_application.css";
+@import "employment/dashboard/dashboard.css";
 
 body {
   background-color: var(--quinary-color);

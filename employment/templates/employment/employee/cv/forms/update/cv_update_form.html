@@ -1,0 +1,444 @@
+{% extends 'core/layout/layout.html' %}
+{% load static %}
+
+{% block title %}Update Your PickleCV{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-[var(--quinary-color)] py-8">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-[var(--primary-color)]">
+                Update Your PickleCV
+            </h1>
+            <p class="text-[var(--tertiary-color)] mt-3 text-lg md:text-xl">
+                Keep your professional profile up to date to attract the best opportunities
+            </p>
+        </div>
+
+        <form method="post" class="space-y-8">
+            {% csrf_token %}
+            
+            <!-- Experience Section -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+                    <div class="flex items-center">
+                        <div class="p-2 rounded-full bg-blue-100 mr-3">
+                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                            </svg>
+                        </div>
+                        <h2 class="text-xl font-semibold text-gray-900">Work Experience</h2>
+                    </div>
+                    <p class="text-gray-600 mt-2">Update your professional experience to showcase your skills and achievements.</p>
+                </div>
+                
+                <div class="p-6">
+                    <div id="experience-forms">
+                        {% for experience in existing_experiences %}
+                        <div class="experience-form border border-gray-200 rounded-lg p-6 mb-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-medium text-gray-900">Experience #{{ forloop.counter }}</h3>
+                                {% if not forloop.first %}
+                                <button type="button" class="remove-experience text-red-600 hover:text-red-800 transition-colors">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1-1H8a1 1 0 00-1 1v3M4 7h16"/>
+                                    </svg>
+                                </button>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label for="id_job_title_{{ forloop.counter0 }}" class="block text-sm font-medium text-gray-700 mb-2">Job Title *</label>
+                                    <input type="text" name="job_title_{{ forloop.counter0 }}" id="id_job_title_{{ forloop.counter0 }}" value="{{ experience.job_title }}" class="form-control" placeholder="e.g. Software Engineer">
+                                </div>
+                                
+                                <div>
+                                    <label for="id_employer_{{ forloop.counter0 }}" class="block text-sm font-medium text-gray-700 mb-2">Employer</label>
+                                    <input type="text" name="employer_{{ forloop.counter0 }}" id="id_employer_{{ forloop.counter0 }}" value="{{ experience.employer }}" class="form-control" placeholder="e.g. Google, Microsoft">
+                                </div>
+                                
+                                <div>
+                                    <label for="id_location_{{ forloop.counter0 }}" class="block text-sm font-medium text-gray-700 mb-2">Location</label>
+                                    <input type="text" name="location_{{ forloop.counter0 }}" id="id_location_{{ forloop.counter0 }}" value="{{ experience.location }}" class="form-control" placeholder="e.g. London, UK">
+                                </div>
+                                
+                                <div>
+                                    <label for="id_experience_level_{{ forloop.counter0 }}" class="block text-sm font-medium text-gray-700 mb-2">Experience Level</label>
+                                    <input type="text" name="experience_level_{{ forloop.counter0 }}" id="id_experience_level_{{ forloop.counter0 }}" value="{{ experience.experience_level }}" class="form-control" placeholder="e.g. Senior, Junior, Lead">
+                                </div>
+                                
+                                <div>
+                                    <label for="id_experience_start_date_{{ forloop.counter0 }}" class="block text-sm font-medium text-gray-700 mb-2">Start Date *</label>
+                                    <input type="date" name="experience_start_date_{{ forloop.counter0 }}" id="id_experience_start_date_{{ forloop.counter0 }}" value="{{ experience.experience_start_date|date:'Y-m-d' }}" class="form-control">
+                                </div>
+                                
+                                <div>
+                                    <label for="id_experience_end_date_{{ forloop.counter0 }}" class="block text-sm font-medium text-gray-700 mb-2">End Date</label>
+                                    <input type="date" name="experience_end_date_{{ forloop.counter0 }}" id="id_experience_end_date_{{ forloop.counter0 }}" value="{% if experience.experience_end_date %}{{ experience.experience_end_date|date:'Y-m-d' }}{% endif %}" class="form-control">
+                                    <p class="text-sm text-gray-500 mt-1">Leave blank if current position</p>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-6">
+                                <label for="id_experience_description_{{ forloop.counter0 }}" class="block text-sm font-medium text-gray-700 mb-2">Description *</label>
+                                <textarea name="experience_description_{{ forloop.counter0 }}" id="id_experience_description_{{ forloop.counter0 }}" rows="4" class="form-control" placeholder="Describe your key responsibilities and achievements...">{{ experience.experience_description }}</textarea>
+                                <p class="text-sm text-gray-500 mt-1">Describe your key responsibilities and achievements</p>
+                            </div>
+                            
+                            <div class="mt-6">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Skills</label>
+                                <div class="space-y-2 max-h-40 overflow-y-auto border border-gray-300 rounded-md p-3">
+                                    {% for skill in all_skills %}
+                                    <label class="flex items-center">
+                                        <input type="checkbox" name="skills_{{ forloop.parentloop.counter0 }}" value="{{ skill.id }}" 
+                                               {% if skill in experience.skills.all %}checked{% endif %}
+                                               class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                        <span class="ml-2 text-sm text-gray-700">{{ skill.name }}</span>
+                                    </label>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="experience-form border border-gray-200 rounded-lg p-6 mb-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-medium text-gray-900">Experience #1</h3>
+                                <button type="button" class="remove-experience text-red-600 hover:text-red-800 transition-colors" style="display: none;">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1-1H8a1 1 0 00-1 1v3M4 7h16"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label for="id_job_title_0" class="block text-sm font-medium text-gray-700 mb-2">Job Title *</label>
+                                    <input type="text" name="job_title_0" id="id_job_title_0" class="form-control" placeholder="e.g. Software Engineer">
+                                </div>
+                                
+                                <div>
+                                    <label for="id_employer_0" class="block text-sm font-medium text-gray-700 mb-2">Employer</label>
+                                    <input type="text" name="employer_0" id="id_employer_0" class="form-control" placeholder="e.g. Google, Microsoft">
+                                </div>
+                                
+                                <div>
+                                    <label for="id_location_0" class="block text-sm font-medium text-gray-700 mb-2">Location</label>
+                                    <input type="text" name="location_0" id="id_location_0" class="form-control" placeholder="e.g. London, UK">
+                                </div>
+                                
+                                <div>
+                                    <label for="id_experience_level_0" class="block text-sm font-medium text-gray-700 mb-2">Experience Level</label>
+                                    <input type="text" name="experience_level_0" id="id_experience_level_0" class="form-control" placeholder="e.g. Senior, Junior, Lead">
+                                </div>
+                                
+                                <div>
+                                    <label for="id_experience_start_date_0" class="block text-sm font-medium text-gray-700 mb-2">Start Date *</label>
+                                    <input type="date" name="experience_start_date_0" id="id_experience_start_date_0" class="form-control">
+                                </div>
+                                
+                                <div>
+                                    <label for="id_experience_end_date_0" class="block text-sm font-medium text-gray-700 mb-2">End Date</label>
+                                    <input type="date" name="experience_end_date_0" id="id_experience_end_date_0" class="form-control">
+                                    <p class="text-sm text-gray-500 mt-1">Leave blank if current position</p>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-6">
+                                <label for="id_experience_description_0" class="block text-sm font-medium text-gray-700 mb-2">Description *</label>
+                                <textarea name="experience_description_0" id="id_experience_description_0" rows="4" class="form-control" placeholder="Describe your key responsibilities and achievements..."></textarea>
+                                <p class="text-sm text-gray-500 mt-1">Describe your key responsibilities and achievements</p>
+                            </div>
+                            
+                            <div class="mt-6">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Skills</label>
+                                <div class="space-y-2 max-h-40 overflow-y-auto border border-gray-300 rounded-md p-3">
+                                    {% for skill in all_skills %}
+                                    <label class="flex items-center">
+                                        <input type="checkbox" name="skills_0" value="{{ skill.id }}" class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                        <span class="ml-2 text-sm text-gray-700">{{ skill.name }}</span>
+                                    </label>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <button type="button" id="add-experience" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-all duration-200">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                        </svg>
+                        Add Another Experience
+                    </button>
+                </div>
+            </div>
+
+            <!-- Education Section -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+                    <div class="flex items-center">
+                        <div class="p-2 rounded-full bg-green-100 mr-3">
+                            <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+                            </svg>
+                        </div>
+                        <h2 class="text-xl font-semibold text-gray-900">Education</h2>
+                    </div>
+                    <p class="text-gray-600 mt-2">Update your educational background and qualifications.</p>
+                </div>
+                
+                <div class="p-6">
+                    <div id="education-forms">
+                        {% for education in existing_educations %}
+                        <div class="education-form border border-gray-200 rounded-lg p-6 mb-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-medium text-gray-900">Education #{{ forloop.counter }}</h3>
+                                {% if not forloop.first %}
+                                <button type="button" class="remove-education text-red-600 hover:text-red-800 transition-colors">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1-1H8a1 1 0 00-1 1v3M4 7h16"/>
+                                    </svg>
+                                </button>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label for="id_school_name_{{ forloop.counter0 }}" class="block text-sm font-medium text-gray-700 mb-2">School/Institution</label>
+                                    <input type="text" name="school_name_{{ forloop.counter0 }}" id="id_school_name_{{ forloop.counter0 }}" value="{{ education.school_name }}" class="form-control" placeholder="e.g. University of Oxford">
+                                </div>
+                                
+                                <div>
+                                    <label for="id_education_location_{{ forloop.counter0 }}" class="block text-sm font-medium text-gray-700 mb-2">Location</label>
+                                    <input type="text" name="education_location_{{ forloop.counter0 }}" id="id_education_location_{{ forloop.counter0 }}" value="{{ education.location }}" class="form-control" placeholder="e.g. Oxford, UK">
+                                </div>
+                                
+                                <div>
+                                    <label for="id_level_{{ forloop.counter0 }}" class="block text-sm font-medium text-gray-700 mb-2">Education Level</label>
+                                    <select name="level_{{ forloop.counter0 }}" id="id_level_{{ forloop.counter0 }}" class="form-control">
+                                        <option value="">Select Level</option>
+                                        {% for choice_value, choice_label in education.EDUCATION_LEVEL_CHOICES %}
+                                        <option value="{{ choice_value }}" {% if education.level == choice_value %}selected{% endif %}>{{ choice_label }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label for="id_field_of_study_{{ forloop.counter0 }}" class="block text-sm font-medium text-gray-700 mb-2">Field of Study</label>
+                                    <input type="text" name="field_of_study_{{ forloop.counter0 }}" id="id_field_of_study_{{ forloop.counter0 }}" value="{{ education.field_of_study }}" class="form-control" placeholder="e.g. Computer Science, Business Administration">
+                                </div>
+                                
+                                <div>
+                                    <label for="id_education_start_date_{{ forloop.counter0 }}" class="block text-sm font-medium text-gray-700 mb-2">Start Date</label>
+                                    <input type="date" name="education_start_date_{{ forloop.counter0 }}" id="id_education_start_date_{{ forloop.counter0 }}" value="{% if education.start_date %}{{ education.start_date|date:'Y-m-d' }}{% endif %}" class="form-control">
+                                </div>
+                                
+                                <div>
+                                    <label for="id_education_end_date_{{ forloop.counter0 }}" class="block text-sm font-medium text-gray-700 mb-2">End Date</label>
+                                    <input type="date" name="education_end_date_{{ forloop.counter0 }}" id="id_education_end_date_{{ forloop.counter0 }}" value="{% if education.end_date %}{{ education.end_date|date:'Y-m-d' }}{% endif %}" class="form-control">
+                                    <p class="text-sm text-gray-500 mt-1">Leave blank if currently studying</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="education-form border border-gray-200 rounded-lg p-6 mb-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-medium text-gray-900">Education #1</h3>
+                                <button type="button" class="remove-education text-red-600 hover:text-red-800 transition-colors" style="display: none;">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1-1H8a1 1 0 00-1 1v3M4 7h16"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label for="id_school_name_0" class="block text-sm font-medium text-gray-700 mb-2">School/Institution</label>
+                                    <input type="text" name="school_name_0" id="id_school_name_0" class="form-control" placeholder="e.g. University of Oxford">
+                                </div>
+                                
+                                <div>
+                                    <label for="id_education_location_0" class="block text-sm font-medium text-gray-700 mb-2">Location</label>
+                                    <input type="text" name="education_location_0" id="id_education_location_0" class="form-control" placeholder="e.g. Oxford, UK">
+                                </div>
+                                
+                                <div>
+                                    <label for="id_level_0" class="block text-sm font-medium text-gray-700 mb-2">Education Level</label>
+                                    <select name="level_0" id="id_level_0" class="form-control">
+                                        <option value="">Select Level</option>
+                                        <option value="GCSE">GCSE</option>
+                                        <option value="A-Level">A-Level</option>
+                                        <option value="BTEC">BTEC</option>
+                                        <option value="Degree">Degree</option>
+                                        <option value="Masters">Masters</option>
+                                        <option value="PhD">PhD</option>
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label for="id_field_of_study_0" class="block text-sm font-medium text-gray-700 mb-2">Field of Study</label>
+                                    <input type="text" name="field_of_study_0" id="id_field_of_study_0" class="form-control" placeholder="e.g. Computer Science, Business Administration">
+                                </div>
+                                
+                                <div>
+                                    <label for="id_education_start_date_0" class="block text-sm font-medium text-gray-700 mb-2">Start Date</label>
+                                    <input type="date" name="education_start_date_0" id="id_education_start_date_0" class="form-control">
+                                </div>
+                                
+                                <div>
+                                    <label for="id_education_end_date_0" class="block text-sm font-medium text-gray-700 mb-2">End Date</label>
+                                    <input type="date" name="education_end_date_0" id="id_education_end_date_0" class="form-control">
+                                    <p class="text-sm text-gray-500 mt-1">Leave blank if currently studying</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <button type="button" id="add-education" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-all duration-200">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                        </svg>
+                        Add Another Education
+                    </button>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <div class="flex items-center justify-between">
+                    <div class="text-sm text-gray-600">
+                        <p>* Required fields</p>
+                        <p class="mt-1">Your changes will be saved and reflected in your profile immediately.</p>
+                    </div>
+                    <div class="flex space-x-3">
+                        <a href="{% url 'employment:employee_dashboard' %}" 
+                           class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-all duration-200">
+                            Cancel
+                        </a>
+                        <button type="submit" 
+                                class="inline-flex items-center px-6 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[var(--primary-color)] hover:bg-[var(--secondary-color)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary-color)] transition-all duration-200">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                            </svg>
+                            Update PickleCV
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Hidden data for JavaScript -->
+<script type="application/json" id="form-data">
+{
+    "experienceCount": {% if existing_experiences %}{{ existing_experiences|length }}{% else %}1{% endif %},
+    "educationCount": {% if existing_educations %}{{ existing_educations|length }}{% else %}1{% endif %}
+}
+</script>
+
+<style>
+.form-control {
+    @apply block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const formData = JSON.parse(document.getElementById('form-data').textContent);
+    let experienceCount = formData.experienceCount;
+    let educationCount = formData.educationCount;
+    
+    // Add Experience
+    document.getElementById('add-experience').addEventListener('click', function() {
+        const template = document.querySelector('.experience-form').cloneNode(true);
+        
+        // Update form numbering and IDs
+        template.querySelector('h3').textContent = 'Experience #' + (experienceCount + 1);
+        template.querySelector('.remove-experience').style.display = 'block';
+        
+        // Clear all input values and update names/IDs
+        const inputs = template.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+            const name = input.name;
+            const id = input.id;
+            if (name) input.name = name.replace(/_\d+$/, '_' + experienceCount);
+            if (id) input.id = id.replace(/_\d+$/, '_' + experienceCount);
+            if (input.type !== 'hidden') {
+                input.value = '';
+                if (input.type === 'checkbox') {
+                    input.checked = false;
+                }
+            }
+        });
+        
+        document.getElementById('experience-forms').appendChild(template);
+        experienceCount++;
+        updateRemoveButtons();
+    });
+    
+    // Add Education
+    document.getElementById('add-education').addEventListener('click', function() {
+        const template = document.querySelector('.education-form').cloneNode(true);
+        
+        // Update form numbering and IDs
+        template.querySelector('h3').textContent = 'Education #' + (educationCount + 1);
+        template.querySelector('.remove-education').style.display = 'block';
+        
+        // Clear all input values and update names/IDs
+        const inputs = template.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+            const name = input.name;
+            const id = input.id;
+            if (name) input.name = name.replace(/_\d+$/, '_' + educationCount);
+            if (id) input.id = id.replace(/_\d+$/, '_' + educationCount);
+            if (input.type !== 'hidden') {
+                input.value = '';
+            }
+        });
+        
+        document.getElementById('education-forms').appendChild(template);
+        educationCount++;
+        updateRemoveButtons();
+    });
+    
+    // Remove forms
+    function updateRemoveButtons() {
+        document.querySelectorAll('.remove-experience').forEach(button => {
+            button.addEventListener('click', function() {
+                if (document.querySelectorAll('.experience-form').length > 1) {
+                    this.closest('.experience-form').remove();
+                    updateFormNumbers();
+                }
+            });
+        });
+        
+        document.querySelectorAll('.remove-education').forEach(button => {
+            button.addEventListener('click', function() {
+                if (document.querySelectorAll('.education-form').length > 1) {
+                    this.closest('.education-form').remove();
+                    updateFormNumbers();
+                }
+            });
+        });
+    }
+    
+    function updateFormNumbers() {
+        document.querySelectorAll('.experience-form').forEach((form, index) => {
+            form.querySelector('h3').textContent = 'Experience #' + (index + 1);
+        });
+        
+        document.querySelectorAll('.education-form').forEach((form, index) => {
+            form.querySelector('h3').textContent = 'Education #' + (index + 1);
+        });
+    }
+    
+    updateRemoveButtons();
+});
+</script>
+{% endblock %}

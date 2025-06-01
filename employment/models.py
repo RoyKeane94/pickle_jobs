@@ -9,6 +9,14 @@ class JobSkill(models.Model):
 
     def __str__(self):
         return self.name
+
+# Interests
+
+class Interest(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
     
 # Job Stages
 
@@ -101,11 +109,25 @@ class EmployeeEducation(models.Model):
     start_date = models.DateField(null=True, blank=True)
     end_date = models.DateField(null=True, blank=True)
 
+class EmployeeInterest(models.Model):
+    employee = models.ForeignKey(EmployeeProfile, on_delete=models.CASCADE)
+    interest = models.ForeignKey(Interest, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.employee.user.first_name + " - " + self.interest.name
+
     
 class PickleProfile(models.Model):
     employee = models.ForeignKey(EmployeeProfile, on_delete=models.CASCADE)
+    overview_description = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    
+    # CV Completion
+    cv_blank = models.BooleanField(default=True)
+    experience_completed = models.BooleanField(default=False)
+    education_completed = models.BooleanField(default=False)
+    skills_completed = models.BooleanField(default=False)
+    interests_completed = models.BooleanField(default=False)
+    cv_completed = models.BooleanField(default=False)
 
     def __str__(self):
         return self.employee.user.first_name + " - " + self.employee.user.last_name

@@ -1,0 +1,182 @@
+{% extends 'core/layout/layout.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}Create Your PickleCV - Education{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'employment/css/cv-forms.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-[var(--quinary-color)] py-8">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Progress Bar -->
+        <div class="mb-8">
+            <nav aria-label="Progress">
+                <ol class="flex items-center justify-between">
+                    <li class="relative flex-1 flex flex-col items-center">
+                        <div class="flex h-8 w-8 items-center justify-center rounded-full bg-green-500">
+                            <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <span class="mt-2 text-sm font-medium text-green-600">Employment</span>
+                    </li>
+                    <li class="relative flex-1 flex flex-col items-center">
+                        <div class="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--secondary-color)]">
+                            <span class="text-sm font-medium text-white">2</span>
+                        </div>
+                        <span class="mt-2 text-sm font-medium text-[var(--secondary-color)]">Education</span>
+                    </li>
+                    <li class="relative flex-1 flex flex-col items-center">
+                        <div class="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[var(--quaternary-color)] bg-white">
+                            <span class="text-sm font-medium text-[var(--tertiary-color)]">3</span>
+                        </div>
+                        <span class="mt-2 text-sm font-medium text-[var(--tertiary-color)]">Skills & Interests</span>
+                    </li>
+                </ol>
+            </nav>
+        </div>
+
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-[var(--primary-color)]">
+                Create Your PickleCV
+            </h1>
+            <p class="text-[var(--tertiary-color)] mt-3 text-lg md:text-xl">
+                Step 2: Add your educational background and qualifications
+            </p>
+        </div>
+
+        <!-- Form -->
+        <form method="post" action="{% url 'employment:employee_cv_create_education' %}" class="space-y-8">
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+                <div class="bg-[var(--color-red-100)] border-l-4 border-[var(--color-red-500)] text-[var(--color-red-700)] p-4 rounded-md" role="alert">
+                    <p class="font-bold">Please correct the following errors:</p>
+                    {% for error in form.non_field_errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!-- Education Section -->
+            <div class="bg-white rounded-xl shadow-lg border border-[var(--quaternary-color)] overflow-hidden">
+                <div class="px-6 py-4 border-b border-[var(--quaternary-color)] bg-white">
+                    <h2 class="text-2xl font-semibold text-[var(--primary-color)] flex items-center">
+                        <svg class="w-6 h-6 mr-3 text-[var(--secondary-color)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+                        </svg>
+                        Education
+                    </h2>
+                    <p class="text-[var(--tertiary-color)] mt-1">Add your educational background and qualifications</p>
+                </div>
+                
+                <div class="p-6">
+                    <div id="education-forms">
+                        <!-- Education Form Template -->
+                        <div class="education-form border border-[var(--quaternary-color)] rounded-lg p-6 mb-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-medium text-[var(--primary-color)]">Education #1</h3>
+                                <button type="button" class="remove-education text-red-600 hover:text-red-800 transition-colors" style="display: none;">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1-1H8a1 1 0 00-1 1v3M4 7h16"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label for="id_school_name_0" class="block text-sm font-semibold text-[var(--primary-color)] mb-2">School/Institution</label>
+                                    <div class="autocomplete-container">
+                                        {% render_field education_form.school_name class="w-full px-4 py-3 border border-[var(--quaternary-color)] rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--secondary-color)] focus:border-[var(--secondary-color)] bg-white autocomplete-school" placeholder="e.g. University of Oxford" %}
+                                        <div class="autocomplete-suggestions"></div>
+                                    </div>
+                                    {% if education_form.school_name.errors %}
+                                        <div class="text-[var(--color-red-600)] text-sm mt-1">{{ education_form.school_name.errors|striptags }}</div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div>
+                                    <label for="id_location_0" class="block text-sm font-semibold text-[var(--primary-color)] mb-2">Location</label>
+                                    <div class="autocomplete-container">
+                                        {% render_field education_form.location class="w-full px-4 py-3 border border-[var(--quaternary-color)] rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--secondary-color)] focus:border-[var(--secondary-color)] bg-white autocomplete-location" placeholder="e.g. Oxford, UK" %}
+                                        <div class="autocomplete-suggestions"></div>
+                                    </div>
+                                    {% if education_form.location.errors %}
+                                        <div class="text-[var(--color-red-600)] text-sm mt-1">{{ education_form.location.errors|striptags }}</div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div>
+                                    <label for="id_level_0" class="block text-sm font-semibold text-[var(--primary-color)] mb-2">Education Level</label>
+                                    {% render_field education_form.level class="w-full px-4 py-3 border border-[var(--quaternary-color)] rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--secondary-color)] focus:border-[var(--secondary-color)] bg-white" %}
+                                    {% if education_form.level.errors %}
+                                        <div class="text-[var(--color-red-600)] text-sm mt-1">{{ education_form.level.errors|striptags }}</div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div>
+                                    <label for="id_field_of_study_0" class="block text-sm font-semibold text-[var(--primary-color)] mb-2">Field of Study</label>
+                                    {% render_field education_form.field_of_study class="w-full px-4 py-3 border border-[var(--quaternary-color)] rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--secondary-color)] focus:border-[var(--secondary-color)] bg-white" placeholder="e.g. Computer Science, Business Administration" %}
+                                    {% if education_form.field_of_study.errors %}
+                                        <div class="text-[var(--color-red-600)] text-sm mt-1">{{ education_form.field_of_study.errors|striptags }}</div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div>
+                                    <label for="id_start_date_0" class="block text-sm font-semibold text-[var(--primary-color)] mb-2">Start Date</label>
+                                    {% render_field education_form.start_date class="w-full px-4 py-3 border border-[var(--quaternary-color)] rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--secondary-color)] focus:border-[var(--secondary-color)] bg-white" %}
+                                    {% if education_form.start_date.errors %}
+                                        <div class="text-[var(--color-red-600)] text-sm mt-1">{{ education_form.start_date.errors|striptags }}</div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div>
+                                    <label for="id_end_date_0" class="block text-sm font-semibold text-[var(--primary-color)] mb-2">End Date</label>
+                                    {% render_field education_form.end_date class="w-full px-4 py-3 border border-[var(--quaternary-color)] rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--secondary-color)] focus:border-[var(--secondary-color)] bg-white" %}
+                                    {% if education_form.end_date.errors %}
+                                        <div class="text-[var(--color-red-600)] text-sm mt-1">{{ education_form.end_date.errors|striptags }}</div>
+                                    {% endif %}
+                                    <p class="text-sm text-[var(--tertiary-color)] mt-1">Leave blank if currently studying</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="button" id="add-education" class="inline-flex items-center px-4 py-2 border border-[var(--quaternary-color)] text-sm font-medium rounded-lg text-[var(--secondary-color)] bg-white hover:bg-[var(--quaternary-color)] hover:text-[var(--primary-color)] transition-all duration-200">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                        </svg>
+                        Add Another Education
+                    </button>
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between pt-6">
+                <a href="{% url 'employment:employee_cv_create_employment' %}" 
+                   class="inline-flex items-center justify-center px-6 py-3 border border-[var(--quaternary-color)] rounded-lg shadow-sm text-sm font-medium text-[var(--secondary-color)] bg-white hover:bg-[var(--quaternary-color)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary-color)] transition-all duration-200">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                    Back: Employment
+                </a>
+                <button type="submit" 
+                        class="inline-flex items-center justify-center px-8 py-3 border border-transparent rounded-lg shadow-lg text-sm font-semibold text-white bg-[var(--primary-color)] hover:bg-[var(--secondary-color)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary-color)] transform hover:scale-105 transition-all duration-200">
+                    Next: Skills & Interests
+                    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                    </svg>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="{% static 'employment/js/cv-forms.js' %}"></script>
+{% endblock %}

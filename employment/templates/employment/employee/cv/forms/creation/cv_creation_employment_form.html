@@ -1,0 +1,217 @@
+{% extends 'core/layout/layout.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}Create Your PickleCV - Employment{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/employment/application/cv-forms.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-[var(--quinary-color)] py-8">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Progress Bar -->
+        <div class="mb-8">
+            <nav aria-label="Progress">
+                <ol class="flex items-center justify-between">
+                    <li class="relative flex-1 flex flex-col items-center">
+                        <div class="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--secondary-color)]">
+                            <span class="text-sm font-medium text-white">1</span>
+                        </div>
+                        <span class="mt-2 text-sm font-medium text-[var(--secondary-color)]">Employment</span>
+                    </li>
+                    <li class="relative flex-1 flex flex-col items-center">
+                        <div class="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[var(--quaternary-color)] bg-white">
+                            <span class="text-sm font-medium text-[var(--tertiary-color)]">2</span>
+                        </div>
+                        <span class="mt-2 text-sm font-medium text-[var(--tertiary-color)]">Education</span>
+                    </li>
+                    <li class="relative flex-1 flex flex-col items-center">
+                        <div class="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[var(--quaternary-color)] bg-white">
+                            <span class="text-sm font-medium text-[var(--tertiary-color)]">3</span>
+                        </div>
+                        <span class="mt-2 text-sm font-medium text-[var(--tertiary-color)]">Skills & Interests</span>
+                    </li>
+                </ol>
+            </nav>
+        </div>
+
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-[var(--primary-color)]">
+                Create Your PickleCV
+            </h1>
+            <p class="text-[var(--tertiary-color)] mt-3 text-lg md:text-xl">
+                Step 1: Add your professional experience to showcase your skills and achievements
+            </p>
+        </div>
+
+        <!-- Form -->
+        <form method="post" action="{% url 'employment:employee_cv_create_employment' %}" class="space-y-8">
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+                <div class="bg-[var(--color-red-100)] border-l-4 border-[var(--color-red-500)] text-[var(--color-red-700)] p-4 rounded-md" role="alert">
+                    <p class="font-bold">Please correct the following errors:</p>
+                    {% for error in form.non_field_errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!-- Work Experience Section -->
+            <div class="bg-white rounded-xl shadow-lg border border-[var(--quaternary-color)] overflow-hidden">
+                <div class="px-6 py-4 border-b border-[var(--quaternary-color)] bg-white">
+                    <h2 class="text-2xl font-semibold text-[var(--primary-color)] flex items-center">
+                        <svg class="w-6 h-6 mr-3 text-[var(--secondary-color)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                        </svg>
+                        Work Experience
+                    </h2>
+                    <p class="text-[var(--tertiary-color)] mt-1">Add your professional experience to showcase your skills and achievements</p>
+                </div>
+                
+                <div class="p-6">
+                    <div id="experience-forms">
+                        <!-- Experience Form Template -->
+                        <div class="experience-form border border-[var(--quaternary-color)] rounded-lg p-6 mb-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-medium text-[var(--primary-color)]">Experience #1</h3>
+                                <button type="button" class="remove-experience text-red-600 hover:text-red-800 transition-colors" style="display: none;">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1-1H8a1 1 0 00-1 1v3M4 7h16"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label for="id_job_title_0" class="block text-sm font-semibold text-[var(--primary-color)] mb-2">Job Title *</label>
+                                    {% render_field experience_form.job_title class="w-full px-4 py-3 border border-[var(--quaternary-color)] rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--secondary-color)] focus:border-[var(--secondary-color)] bg-white" placeholder="e.g. Senior Software Engineer" %}
+                                    {% if experience_form.job_title.errors %}
+                                        <div class="text-[var(--color-red-600)] text-sm mt-1">{{ experience_form.job_title.errors|striptags }}</div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div>
+                                    <label for="id_employer_0" class="block text-sm font-semibold text-[var(--primary-color)] mb-2">Employer</label>
+                                    <div class="autocomplete-container">
+                                        {% render_field experience_form.employer class="w-full px-4 py-3 border border-[var(--quaternary-color)] rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--secondary-color)] focus:border-[var(--secondary-color)] bg-white autocomplete-company" placeholder="e.g. Google, Microsoft" %}
+                                        <div class="autocomplete-suggestions" id="employer-suggestions-0"></div>
+                                    </div>
+                                    {% if experience_form.employer.errors %}
+                                        <div class="text-[var(--color-red-600)] text-sm mt-1">{{ experience_form.employer.errors|striptags }}</div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div>
+                                    <label for="id_location_0" class="block text-sm font-semibold text-[var(--primary-color)] mb-2">Location</label>
+                                    <div class="autocomplete-container">
+                                        {% render_field experience_form.location class="w-full px-4 py-3 border border-[var(--quaternary-color)] rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--secondary-color)] focus:border-[var(--secondary-color)] bg-white autocomplete-location" placeholder="e.g. London, UK" %}
+                                        <div class="autocomplete-suggestions" id="location-suggestions-0"></div>
+                                    </div>
+                                    {% if experience_form.location.errors %}
+                                        <div class="text-[var(--color-red-600)] text-sm mt-1">{{ experience_form.location.errors|striptags }}</div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div>
+                                    <label for="id_experience_level_0" class="block text-sm font-semibold text-[var(--primary-color)] mb-2">Experience Level</label>
+                                    {% render_field experience_form.experience_level class="w-full px-4 py-3 border border-[var(--quaternary-color)] rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--secondary-color)] focus:border-[var(--secondary-color)] bg-white" placeholder="e.g. Senior, Junior, Lead" %}
+                                    {% if experience_form.experience_level.errors %}
+                                        <div class="text-[var(--color-red-600)] text-sm mt-1">{{ experience_form.experience_level.errors|striptags }}</div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div>
+                                    <label for="id_experience_start_date_0" class="block text-sm font-semibold text-[var(--primary-color)] mb-2">Start Date *</label>
+                                    {% render_field experience_form.experience_start_date class="w-full px-4 py-3 border border-[var(--quaternary-color)] rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--secondary-color)] focus:border-[var(--secondary-color)] bg-white" %}
+                                    {% if experience_form.experience_start_date.errors %}
+                                        <div class="text-[var(--color-red-600)] text-sm mt-1">{{ experience_form.experience_start_date.errors|striptags }}</div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div>
+                                    <label for="id_experience_end_date_0" class="block text-sm font-semibold text-[var(--primary-color)] mb-2">End Date</label>
+                                    {% render_field experience_form.experience_end_date class="w-full px-4 py-3 border border-[var(--quaternary-color)] rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--secondary-color)] focus:border-[var(--secondary-color)] bg-white" %}
+                                    {% if experience_form.experience_end_date.errors %}
+                                        <div class="text-[var(--color-red-600)] text-sm mt-1">{{ experience_form.experience_end_date.errors|striptags }}</div>
+                                    {% endif %}
+                                    <p class="text-sm text-[var(--tertiary-color)] mt-1">Leave blank if current position</p>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-6">
+                                <label for="id_experience_description_0" class="block text-sm font-semibold text-[var(--primary-color)] mb-2">Description *</label>
+                                {% render_field experience_form.experience_description class="w-full px-4 py-3 border border-[var(--quaternary-color)] rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--secondary-color)] focus:border-[var(--secondary-color)] bg-white" rows="4" placeholder="Describe your key responsibilities and achievements..." %}
+                                {% if experience_form.experience_description.errors %}
+                                    <div class="text-[var(--color-red-600)] text-sm mt-1">{{ experience_form.experience_description.errors|striptags }}</div>
+                                {% endif %}
+                                <p class="text-sm text-[var(--tertiary-color)] mt-1">Describe your key responsibilities and achievements</p>
+                            </div>
+                            
+                            <!-- Skills Section -->
+                            <div class="mt-6">
+                                <label class="block text-sm font-semibold text-[var(--primary-color)] mb-2">Skills</label>
+                                <p class="text-sm text-[var(--tertiary-color)] mb-4">Select skills you used in this role</p>
+                                
+                                {% if experience_form.skills.field.queryset %}
+                                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 skills-grid">
+                                        {% for skill in experience_form.skills.field.queryset %}
+                                            <div class="skill-item flex items-center justify-center p-4 border-2 border-[var(--quaternary-color)] rounded-lg bg-white hover:border-[var(--tertiary-color)] transition-all duration-200 min-h-[80px]">
+                                                <input type="checkbox" name="skills_0" value="{{ skill.id }}" id="skill_{{ skill.id }}_0" class="hidden" />
+                                                <span class="skill-name text-sm font-medium text-[var(--secondary-color)] text-center">{{ skill.name }}</span>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <div class="text-center py-8 bg-[var(--quaternary-color)] rounded-lg border border-dashed border-[var(--tertiary-color)]">
+                                        <svg class="mx-auto h-12 w-12 text-[var(--tertiary-color)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                                        </svg>
+                                        <h3 class="mt-2 text-sm font-medium text-[var(--secondary-color)]">No skills available</h3>
+                                        <p class="mt-1 text-sm text-[var(--tertiary-color)]">Contact an administrator to add skills to the system.</p>
+                                    </div>
+                                {% endif %}
+                                
+                                {% if experience_form.skills.errors %}
+                                    <div class="text-[var(--color-red-600)] text-sm mt-1">{{ experience_form.skills.errors|striptags }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="button" id="add-experience" class="inline-flex items-center px-4 py-2 border border-[var(--quaternary-color)] text-sm font-medium rounded-lg text-[var(--secondary-color)] bg-white hover:bg-[var(--quaternary-color)] hover:text-[var(--primary-color)] transition-all duration-200">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                        </svg>
+                        Add Another Experience
+                    </button>
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between pt-6">
+                <a href="{% url 'employment:employee_dashboard' %}" 
+                   class="inline-flex items-center justify-center px-6 py-3 border border-[var(--quaternary-color)] rounded-lg shadow-sm text-sm font-medium text-[var(--secondary-color)] bg-white hover:bg-[var(--quaternary-color)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary-color)] transition-all duration-200">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                    Back to Dashboard
+                </a>
+                <button type="submit" 
+                        class="inline-flex items-center justify-center px-8 py-3 border border-transparent rounded-lg shadow-lg text-sm font-semibold text-white bg-[var(--primary-color)] hover:bg-[var(--secondary-color)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary-color)] transform hover:scale-105 transition-all duration-200">
+                    Next: Education
+                    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                    </svg>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="{% static 'css/employment/js/cv-forms.js' %}"></script>
+{% endblock %}
