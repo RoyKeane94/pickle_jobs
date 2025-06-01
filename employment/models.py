@@ -1,5 +1,5 @@
 from django.db import models
-from accounts.models import EmployerProfile, EmployeeProfile
+from accounts.models import EmployerProfile, EmployeeProfile, Company
 
 
 # Job Skills
@@ -51,3 +51,61 @@ class JobApplication(models.Model):
 
     def __str__(self):
         return f"{self.job_posting.title} - {self.stage.name}"
+    
+class Location(models.Model):
+    name = models.CharField(max_length=255)
+    postal_code = models.CharField(max_length=12, null=True, blank=True)
+    country = models.CharField(max_length=255, null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+    
+class EmployeeExperience(models.Model):
+    employee = models.ForeignKey(EmployeeProfile, on_delete=models.CASCADE)
+    job_posting = models.ForeignKey(JobPosting, on_delete=models.CASCADE, null=True, blank=True)
+    job_title = models.CharField(max_length=255, null=True, blank=True)
+    employer = models.ForeignKey(Company, on_delete=models.CASCADE, null=True)
+    location = models.ForeignKey(Location, on_delete=models.CASCADE, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    experience_level = models.CharField(max_length=255)
+    experience_description = models.TextField()
+    experience_start_date = models.DateField()
+    experience_end_date = models.DateField(null=True, blank=True)
+    skills = models.ManyToManyField(JobSkill)
+
+    def __str__(self):
+        return self.employee.user.first_name + " - " + self.job_title
+    
+class School(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+    
+class EmployeeEducation(models.Model):
+    EDUCATION_LEVEL_CHOICES = [
+        ('GCSE', 'GCSE'),
+        ('A-Level', 'A-Level'),
+        ('BTEC', 'BTEC'),
+        ('Degree', 'Degree'),
+        ('Masters', 'Masters'),
+        ('PhD', 'PhD'),
+    ]
+    
+    employee = models.ForeignKey(EmployeeProfile, on_delete=models.CASCADE)
+    location = models.ForeignKey(Location, on_delete=models.CASCADE, null=True)
+    school_name = models.ForeignKey(School, on_delete=models.CASCADE, null=True)
+    level = models.CharField(max_length=255, choices=EDUCATION_LEVEL_CHOICES, default='GCSE')
+    field_of_study = models.CharField(max_length=255, null=True, blank=True)
+    start_date = models.DateField(null=True, blank=True)
+    end_date = models.DateField(null=True, blank=True)
+
+    
+class PickleProfile(models.Model):
+    employee = models.ForeignKey(EmployeeProfile, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+
+    def __str__(self):
+        return self.employee.user.first_name + " - " + self.employee.user.last_name
